@@ -1,7 +1,7 @@
 # Changelog
 
-All notable changes to `:package_name` will be documented in this file.
+All notable changes to `swisnl/filament-geometry` will be documented in this file.
 
-## 1.0.0 - 202X-XX-XX
+## 0.1.0 - 2025-07-01
 
-- initial release
+- Initial release
