@@ -14,6 +14,10 @@
 
 </div>
 
+> [!WARNING]
+> Work in progress, not stable yet!
+>
+
 ## Installation
 
 You can install the package via composer:
