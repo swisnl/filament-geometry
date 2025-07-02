@@ -1,21 +1,22 @@
 {
-    "name": ":vendor_slug/:package_slug",
-    "description": ":package_description",
+    "name": "swisnl/filament-geometry",
+    "description": "Geometry form field for Filament PHP",
     "keywords": [
-        ":vendor_name",
+        "filament",
+        "filament-geometry",
         "laravel",
-        ":package_slug"
+        "swisnl"
     ],
-    "homepage": "https://github.com/:vendor_slug/:package_slug",
+    "homepage": "https://github.com/swisnl/filament-geometry",
     "support": {
-        "issues": "https://github.com/:vendor_slug/:package_slug/issues",
-        "source": "https://github.com/:vendor_slug/:package_slug"
+        "issues": "https://github.com/swisnl/filament-geometry/issues",
+        "source": "https://github.com/swisnl/filament-geometry"
     },
     "license": "MIT",
     "authors": [
         {
-            "name": ":author_name",
-            "email": "author@domain.com",
+            "name": "Pjotr van der Horst",
+            "email": "pvanderhorst@swis.nl",
             "role": "Developer"
         }
     ],
@@ -23,7 +24,6 @@
         "php": "^8.1",
         "filament/filament": "^3.0",
         "filament/forms": "^3.0",
-        "filament/tables": "^3.0",
         "spatie/laravel-package-tools": "^1.15.0"
     },
     "require-dev": {
@@ -41,13 +41,12 @@
     },
     "autoload": {
         "psr-4": {
-            "VendorName\\Skeleton\\": "src/",
-            "VendorName\\Skeleton\\Database\\Factories\\": "database/factories/"
+            "Swis\\Filament\\Geometry\\": "src/"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "VendorName\\Skeleton\\Tests\\": "tests/"
+            "Swis\\Filament\\Geometry\\Tests\\": "tests/"
         }
     },
     "scripts": {
@@ -67,11 +66,8 @@
     "extra": {
         "laravel": {
             "providers": [
-                "VendorName\\Skeleton\\SkeletonServiceProvider"
-            ],
-            "aliases": {
-                "Skeleton": "VendorName\\Skeleton\\Facades\\Skeleton"
-            }
+                "Swis\\Filament\\Geometry\\FilamentGeometryServiceProvider"
+            ]
         }
     },
     "minimum-stability": "dev",
