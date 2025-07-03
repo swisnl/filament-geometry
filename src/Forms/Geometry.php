@@ -35,7 +35,7 @@ class Geometry extends Field
      * @var array<string, mixed>
      */
     private array $controls = [
-        'attributionControl' => false,
+        'attributionControl' => true,
         'doubleClickZoom' => 'center',
         'fullscreenControl' => true,
         'maxZoom' => 19,
@@ -183,6 +183,16 @@ class Geometry extends Field
     public function showFullscreenControl(Closure|bool $show = true): self
     {
         $this->controls['fullscreenControl'] = $this->evaluate($show);
+
+        return $this;
+    }
+
+    /**
+     * @return $this
+     */
+    public function showAttributionControl(Closure|bool $show = true): self
+    {
+        $this->controls['attributionControl'] = $this->evaluate($show);
 
         return $this;
     }

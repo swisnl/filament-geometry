@@ -98,6 +98,7 @@ Geometry::make('location')
     // Controls
     ->showFullscreenControl(true)
     ->showZoomControl(true)
+    ->showAttributionControl(true)
     ->drawModes([
         DrawMode::Marker,
         DrawMode::Polygon,
