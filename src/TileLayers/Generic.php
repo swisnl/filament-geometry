@@ -24,6 +24,8 @@ final class Generic implements TileLayer
 
     /**
      * @param  array<string, mixed>  $options
+     *
+     * @see https://leafletjs.com/reference.html#tilelayer-option for all available options
      */
     public static function make(string $url, array $options = []): self
     {

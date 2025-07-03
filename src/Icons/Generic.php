@@ -21,6 +21,8 @@ final class Generic implements Icon
 
     /**
      * @param  array<string, mixed>  $options
+     *
+     * @see https://leafletjs.com/reference.html#divicon-option for all available options
      */
     public static function make(array $options = []): self
     {
