@@ -20,19 +20,24 @@ class Geometry extends Field
      */
     private array $mapConfig = [
         'bounds' => false,
-        'detectRetina' => false,
         'geoMan' => [
             'position' => 'topleft',
         ],
         'markerColor' => '#3b82f6',
         'markerIconClassName' => '',
-        'maxZoom' => 28,
-        'minZoom' => 0,
         'statePath' => '',
-        'tileSize' => 256,
-        'tilesUrl' => 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
         'zoom' => 15,
-        'zoomOffset' => 0,
+        'tileLayer'=> [
+            'url' => 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+            'options' => [
+                'detectRetina' => false,
+                'maxZoom' => 28,
+                'minZoom' => 0,
+                'noWrap' => true,
+                'tileSize' => 256,
+                'zoomOffset' => 0,
+            ],
+        ],
     ];
 
     /**
@@ -148,7 +153,7 @@ class Geometry extends Field
      */
     public function tilesUrl(string $url): self
     {
-        $this->mapConfig['tilesUrl'] = $url;
+        $this->mapConfig['tileLayer']['url'] = $url;
 
         return $this;
     }
@@ -158,7 +163,7 @@ class Geometry extends Field
      */
     public function detectRetina(Closure|bool $detectRetina = true): self
     {
-        $this->mapConfig['detectRetina'] = $this->evaluate($detectRetina);
+        $this->mapConfig['tileLayer']['detectRetina'] = $this->evaluate($detectRetina);
 
         return $this;
     }

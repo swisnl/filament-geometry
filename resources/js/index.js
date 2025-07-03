@@ -20,14 +20,7 @@ export default function filamentGeometry($wire, config) {
                 })
             }
 
-            this.tile = LF.tileLayer(config.tilesUrl, {
-                detectRetina: config.detectRetina,
-                maxZoom: config.maxZoom,
-                minZoom: config.minZoom,
-                noWrap: true,
-                tileSize: config.tileSize,
-                zoomOffset: config.zoomOffset,
-            }).addTo(this.map)
+            this.tile = LF.tileLayer(config.tileLayer.url, config.tileLayer.options).addTo(this.map)
 
             this.map.pm.addControls({
                 customControls: false,
