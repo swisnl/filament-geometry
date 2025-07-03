@@ -16,7 +16,12 @@ class Geometry extends Field
     /**
      * @var array<int, \Swis\Filament\Geometry\Enums\DrawMode>
      */
-    private array $drawModes = [];
+    private array $drawModes = [
+        DrawMode::Marker,
+        DrawMode::Polygon,
+        DrawMode::Polyline,
+        DrawMode::Rectangle,
+    ];
 
     /**
      * @var array<string, mixed>

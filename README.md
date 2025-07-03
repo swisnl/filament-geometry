@@ -100,9 +100,7 @@ Geometry::make('location')
     ->showZoomControl(true)
     ->showAttributionControl(true)
     ->drawModes([
-        DrawMode::Marker,
         DrawMode::Polygon,
-        DrawMode::Polyline,
         DrawMode::Rectangle,
     ])
     ->drawControlPosition(ControlPosition::TopRight)
