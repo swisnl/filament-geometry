@@ -1,0 +1,7 @@
+parameters:
+	ignoreErrors:
+		-
+			message: '#^Property Swis\\Filament\\Geometry\\Forms\\Geometry\:\:\$view \(view\-string\) does not accept default value of type string\.$#'
+			identifier: property.defaultValue
+			count: 1
+			path: src/Forms/Geometry.php
