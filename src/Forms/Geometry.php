@@ -5,6 +5,7 @@ namespace Swis\Filament\Geometry\Forms;
 use Closure;
 use Filament\Forms\Components\Field;
 use Swis\Filament\Geometry\Contracts\TileLayer;
+use Swis\Filament\Geometry\Enums\ControlPosition;
 use Swis\Filament\Geometry\Enums\DrawMode;
 use Swis\Filament\Geometry\TileLayers\OpenStreetMap;
 
@@ -22,15 +23,13 @@ class Geometry extends Field
      */
     private array $mapConfig = [
         'bounds' => false,
-        'geoMan' => [
-            'position' => 'topleft',
-        ],
         'markerColor' => '#3b82f6',
         'markerIconClassName' => '',
-        'statePath' => '',
     ];
 
     private TileLayer $tileLayer;
+
+    private ControlPosition $drawControlPosition = ControlPosition::TopLeft;
 
     /**
      * @var array<string, mixed>
@@ -75,16 +74,18 @@ class Geometry extends Field
     public function getMapConfig(): string
     {
         $statePath = $this->getStatePath();
+        $config = $this->mapConfig;
 
-        $this->mapConfig['lang']['warning']['limit'] = __('filament-geometry::geometry.warning.limit');
+        $config['lang']['warning']['limit'] = __('filament-geometry::geometry.warning.limit');
         // Build config: key = DrawMode value, value = bool (selected)
         foreach (DrawMode::cases() as $mode) {
-            $this->mapConfig['geoMan']['draw'.$mode->name] = in_array($mode, $this->drawModes, true);
-            $this->mapConfig['geoMan']['edit'.$mode->name] = in_array($mode, $this->drawModes, true);
+            $config['geoMan']['draw'.$mode->name] = in_array($mode, $this->drawModes, true);
+            $config['geoMan']['edit'.$mode->name] = in_array($mode, $this->drawModes, true);
         }
+        $config['geoMan']['position'] = $this->drawControlPosition->value;
 
         return json_encode(
-            array_merge($this->mapConfig, [
+            array_merge($config, [
                 'statePath' => $statePath,
                 'controls' => $this->controls,
                 'tileLayer' => [
@@ -198,14 +199,10 @@ class Geometry extends Field
 
     /**
      * @return $this
-     *
-     * @note Valid values: 'topleft', 'topright', 'bottomleft', 'bottomright'
      */
-    public function geoManPosition(string $position = 'topleft'): self
+    public function drawControlPosition(ControlPosition $position): self
     {
-        if (in_array($position, ['topleft', 'topright', 'bottomleft', 'bottomright'], true)) {
-            $this->mapConfig['geoMan']['position'] = $position;
-        }
+        $this->drawControlPosition = $position;
 
         return $this;
     }

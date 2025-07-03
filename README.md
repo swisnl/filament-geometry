@@ -74,6 +74,7 @@ property referencing a second pair of geojson fields.
 The full set of options is as follows.  All option methods support closures, as well as direct values.
 
 ```php
+use Swis\Filament\Geometry\Enums\ControlPosition
 use Swis\Filament\Geometry\Enums\DrawMode;
 use Swis\Filament\Geometry\Forms\Geometry;
 use Swis\Filament\Geometry\TileLayers\Carto;
@@ -103,9 +104,7 @@ Geometry::make('location')
         DrawMode::Polyline,
         DrawMode::Rectangle,
     ])
-
-    // GeoMan Integration
-    ->geoManPosition('topleft')
+    ->drawControlPosition(ControlPosition::TopRight)
 ```
 
 ## Testing
