@@ -27,7 +27,7 @@ class Geometry extends Field
         'markerIconClassName' => '',
         'statePath' => '',
         'zoom' => 15,
-        'tileLayer'=> [
+        'tileLayer' => [
             'url' => 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
             'options' => [
                 'detectRetina' => false,
