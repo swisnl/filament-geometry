@@ -91,14 +91,14 @@ export default function filamentGeometry($wire, config) {
                     },
                 }).addTo(this.map)
 
-                this.drawItems.on('pm:edit', (e) => {
-                    this.updateGeoJson()
-                })
-
                 this.map.fitBounds(this.drawItems.getBounds(), {
                     maxZoom: 16,
                 })
             }
+
+            this.drawItems.on('pm:edit', (e) => {
+                this.updateGeoJson()
+            })
         },
         createMarkerIcon() {
             const markerColor = config.markerColor || '#3b82f6'
@@ -120,7 +120,7 @@ export default function filamentGeometry($wire, config) {
         },
 
         getGeoJsonFeature: function() {
-            return JSON.parse(this.$wire.get(config.statePath)) ?? {}
+            return JSON.parse(this.$wire.get(config.statePath))
         },
 
         removeMap: function(el) {
