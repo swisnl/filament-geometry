@@ -76,18 +76,19 @@ The full set of options is as follows.  All option methods support closures, as 
 ```php
 use Swis\Filament\Geometry\Enums\DrawMode;
 use Swis\Filament\Geometry\Forms\Geometry;
+use Swis\Filament\Geometry\TileLayers\Carto;
 
 ...
 
 Geometry::make('location')
     ->label(__('Location'))
 
-    // Basic configuration
-    ->detectRetina(true)
-    ->maxZoom(28)
-    ->minZoom(0)
-    ->tilesUrl('https://tile.openstreetmap.org/{z}/{x}/{y}.png')
+    // Map configuration
+    ->maxZoom(16)
+    ->minZoom(4)
     ->zoom(15)
+    ->boundaries(true, 49.5, -11, 61, 2) // Example for British Isles
+    ->tileLayer(Carto::make())
 
     // Marker configuration
     ->markerColor("#3b82f6")
@@ -101,9 +102,6 @@ Geometry::make('location')
         DrawMode::Polyline,
         DrawMode::Rectangle,
     ])
-    
-    // Location features
-    ->boundaries(true, 49.5, -11, 61, 2) // Example for British Isles
 
     // GeoMan Integration
     ->geoManPosition('topleft')

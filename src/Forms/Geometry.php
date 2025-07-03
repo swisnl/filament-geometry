@@ -4,7 +4,9 @@ namespace Swis\Filament\Geometry\Forms;
 
 use Closure;
 use Filament\Forms\Components\Field;
+use Swis\Filament\Geometry\Contracts\TileLayer;
 use Swis\Filament\Geometry\Enums\DrawMode;
+use Swis\Filament\Geometry\TileLayers\OpenStreetMap;
 
 class Geometry extends Field
 {
@@ -27,18 +29,9 @@ class Geometry extends Field
         'markerIconClassName' => '',
         'statePath' => '',
         'zoom' => 15,
-        'tileLayer' => [
-            'url' => 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
-            'options' => [
-                'detectRetina' => false,
-                'maxZoom' => 28,
-                'minZoom' => 0,
-                'noWrap' => true,
-                'tileSize' => 256,
-                'zoomOffset' => 0,
-            ],
-        ],
     ];
+
+    private TileLayer $tileLayer;
 
     /**
      * @var array<string, mixed>
@@ -47,7 +40,7 @@ class Geometry extends Field
         'attributionControl' => false,
         'doubleClickZoom' => 'center',
         'fullscreenControl' => true,
-        'maxZoom' => 28,
+        'maxZoom' => 19,
         'minZoom' => 1,
         'scrollWheelZoom' => 'center',
         'touchZoom' => 'center',
@@ -59,7 +52,8 @@ class Geometry extends Field
     {
         parent::setUp();
 
-        $this->columnSpanFull();
+        $this->columnSpanFull()
+            ->tileLayer(OpenStreetMap::make());
     }
 
     /**
@@ -93,6 +87,10 @@ class Geometry extends Field
             array_merge($this->mapConfig, [
                 'statePath' => $statePath,
                 'controls' => $this->controls,
+                'tileLayer' => [
+                    'url' => $this->tileLayer->url(),
+                    'options' => $this->tileLayer->options(),
+                ],
             ])
         );
     }
@@ -151,19 +149,9 @@ class Geometry extends Field
     /**
      * @return $this
      */
-    public function tilesUrl(string $url): self
+    public function tileLayer(TileLayer $tileLayer): self
     {
-        $this->mapConfig['tileLayer']['url'] = $url;
-
-        return $this;
-    }
-
-    /**
-     * @return $this
-     */
-    public function detectRetina(Closure|bool $detectRetina = true): self
-    {
-        $this->mapConfig['tileLayer']['detectRetina'] = $this->evaluate($detectRetina);
+        $this->tileLayer = $tileLayer;
 
         return $this;
     }
