@@ -77,6 +77,7 @@ The full set of options is as follows.  All option methods support closures, as 
 use Swis\Filament\Geometry\Enums\ControlPosition
 use Swis\Filament\Geometry\Enums\DrawMode;
 use Swis\Filament\Geometry\Forms\Geometry;
+use Swis\Filament\Geometry\Icons\Marker;
 use Swis\Filament\Geometry\TileLayers\Carto;
 
 ...
@@ -93,7 +94,7 @@ Geometry::make('location')
     ->tileLayer(Carto::make())
 
     // Marker configuration
-    ->markerColor("#3b82f6")
+    ->markerIcon(Marker::make('#3b82f6'))
     
     // Controls
     ->showFullscreenControl(true)

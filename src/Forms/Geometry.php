@@ -4,9 +4,11 @@ namespace Swis\Filament\Geometry\Forms;
 
 use Closure;
 use Filament\Forms\Components\Field;
+use Swis\Filament\Geometry\Contracts\Icon;
 use Swis\Filament\Geometry\Contracts\TileLayer;
 use Swis\Filament\Geometry\Enums\ControlPosition;
 use Swis\Filament\Geometry\Enums\DrawMode;
+use Swis\Filament\Geometry\Icons\Marker;
 use Swis\Filament\Geometry\TileLayers\OpenStreetMap;
 
 class Geometry extends Field
@@ -28,13 +30,13 @@ class Geometry extends Field
      */
     private array $mapConfig = [
         'bounds' => false,
-        'markerColor' => '#3b82f6',
-        'markerIconClassName' => '',
     ];
 
     private TileLayer $tileLayer;
 
     private ControlPosition $drawControlPosition = ControlPosition::TopLeft;
+
+    private Icon $markerIcon;
 
     /**
      * @var array<string, mixed>
@@ -57,7 +59,8 @@ class Geometry extends Field
         parent::setUp();
 
         $this->columnSpanFull()
-            ->tileLayer(OpenStreetMap::make());
+            ->tileLayer(OpenStreetMap::make())
+            ->markerIcon(Marker::make());
     }
 
     /**
@@ -93,6 +96,7 @@ class Geometry extends Field
             array_merge($config, [
                 'statePath' => $statePath,
                 'controls' => $this->controls,
+                'markerIcon' => $this->markerIcon->options(),
                 'tileLayer' => [
                     'url' => $this->tileLayer->url(),
                     'options' => $this->tileLayer->options(),
@@ -205,9 +209,9 @@ class Geometry extends Field
     /**
      * @return $this
      */
-    public function markerColor(string $color): self
+    public function markerIcon(Icon $icon): self
     {
-        $this->mapConfig['markerColor'] = $color;
+        $this->markerIcon = $icon;
 
         return $this;
     }
