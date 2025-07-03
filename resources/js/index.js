@@ -22,6 +22,7 @@ export default function filamentGeometry($wire, config) {
 
             this.tile = LF.tileLayer(config.tileLayer.url, config.tileLayer.options).addTo(this.map)
 
+            this.map.pm.setLang(config.locale, {}, 'en');
             this.map.pm.addControls({
                 customControls: false,
                 cutPolygon: false,

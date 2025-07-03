@@ -38,6 +38,8 @@ class Geometry extends Field
 
     private Icon $markerIcon;
 
+    private string $locale = 'en';
+
     /**
      * @var array<string, mixed>
      */
@@ -60,7 +62,8 @@ class Geometry extends Field
 
         $this->columnSpanFull()
             ->tileLayer(OpenStreetMap::make())
-            ->markerIcon(Marker::make());
+            ->markerIcon(Marker::make())
+            ->locale(config('app.locale', $this->locale));
     }
 
     /**
@@ -96,6 +99,7 @@ class Geometry extends Field
             array_merge($config, [
                 'statePath' => $statePath,
                 'controls' => $this->controls,
+                'locale' => $this->locale,
                 'markerIcon' => $this->markerIcon->options(),
                 'tileLayer' => [
                     'url' => $this->tileLayer->url(),
@@ -222,6 +226,16 @@ class Geometry extends Field
     public function drawControlPosition(ControlPosition $position): self
     {
         $this->drawControlPosition = $position;
+
+        return $this;
+    }
+
+    /**
+     * @return $this
+     */
+    public function locale(string $locale): self
+    {
+        $this->locale = $locale;
 
         return $this;
     }
