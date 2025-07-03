@@ -86,6 +86,7 @@ Geometry::make('location')
     // Map configuration
     ->maxZoom(16)
     ->minZoom(4)
+    ->center(52.164206390898904, 4.491920969490259)
     ->zoom(15)
     ->boundaries(true, 49.5, -11, 61, 2) // Example for British Isles
     ->tileLayer(Carto::make())

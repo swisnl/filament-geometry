@@ -28,7 +28,6 @@ class Geometry extends Field
         'markerColor' => '#3b82f6',
         'markerIconClassName' => '',
         'statePath' => '',
-        'zoom' => 15,
     ];
 
     private TileLayer $tileLayer;
@@ -44,6 +43,7 @@ class Geometry extends Field
         'minZoom' => 1,
         'scrollWheelZoom' => 'center',
         'touchZoom' => 'center',
+        'center' => [0, 0],
         'zoom' => 15,
         'zoomControl' => true,
     ];
@@ -112,6 +112,16 @@ class Geometry extends Field
 
         $this->mapConfig['bounds']['sw'] = ['lat' => $southWestLat, 'lng' => $southWestLng];
         $this->mapConfig['bounds']['ne'] = ['lat' => $northEastLat, 'lng' => $northEastLng];
+
+        return $this;
+    }
+
+    /**
+     * @return $this
+     */
+    public function center(float $lat, float $lng): self
+    {
+        $this->controls['center'] = [$lat, $lng];
 
         return $this;
     }
