@@ -9,7 +9,7 @@
         x-init="$nextTick(() => { attach($refs.map) })"
     >
         <x-filament::input.wrapper class="overflow-hidden">
-            <div x-ref="map" class="aspect-[1/1] sm:aspect-[4/3] md:aspect-[16/9] 2xl:aspect-[16/5] z-0"></div>
+            <div x-ref="map" class="h-[40dvh] z-0"></div>
         </x-filament::input.wrapper>
         <input
             {{
