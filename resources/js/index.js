@@ -1,6 +1,7 @@
 import * as LF from 'leaflet'
 import 'leaflet.fullscreen'
 import '@geoman-io/leaflet-geoman-free'
+import 'leaflet-gesture-handling';
 
 export default function filamentGeometry($wire, config) {
     return {

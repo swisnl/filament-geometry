@@ -1,3 +1,4 @@
 @import "../../node_modules/leaflet/dist/leaflet.css";
 @import "../../node_modules/leaflet.fullscreen/Control.FullScreen.css";
 @import "../../node_modules/@geoman-io/leaflet-geoman-free/dist/leaflet-geoman.css";
+@import "../../node_modules/leaflet-gesture-handling/dist/leaflet-gesture-handling.css";
