@@ -26,11 +26,6 @@ class Geometry extends Field
     ];
 
     /**
-     * @var array<string, mixed>
-     */
-    private array $mapConfig = [];
-
-    /**
      * @var ?array{'sw': array{'lat': int|float, 'lng': int|float}, 'ne': array{'lat': int|float, 'lng': int|float}}
      */
     private ?array $bounds = null;
@@ -46,7 +41,7 @@ class Geometry extends Field
     /**
      * @var array<string, mixed>
      */
-    private array $controls = [
+    private array $mapOptions = [
         'attributionControl' => true,
         'doubleClickZoom' => 'center',
         'fullscreenControl' => true,
@@ -86,9 +81,7 @@ class Geometry extends Field
      */
     public function getMapConfig(): string
     {
-        $statePath = $this->getStatePath();
-        $config = $this->mapConfig;
-
+        $config = [];
         $config['lang']['warning']['limit'] = __('filament-geometry::geometry.warning.limit');
         // Build config: key = DrawMode value, value = bool (selected)
         foreach (DrawMode::cases() as $mode) {
@@ -99,9 +92,9 @@ class Geometry extends Field
 
         return json_encode(
             array_merge($config, [
-                'statePath' => $statePath,
+                'statePath' => $this->getStatePath(),
                 'bounds' => $this->bounds,
-                'controls' => $this->controls,
+                'map' => $this->mapOptions,
                 'locale' => $this->locale,
                 'markerIcon' => $this->markerIcon->options(),
                 'tileLayer' => [
@@ -141,7 +134,7 @@ class Geometry extends Field
      */
     public function center(float $lat, float $lng): self
     {
-        $this->controls['center'] = [$lat, $lng];
+        $this->mapOptions['center'] = [$lat, $lng];
 
         return $this;
     }
@@ -151,7 +144,7 @@ class Geometry extends Field
      */
     public function zoom(int $zoom): self
     {
-        $this->controls['zoom'] = $zoom;
+        $this->mapOptions['zoom'] = $zoom;
 
         return $this;
     }
@@ -161,7 +154,7 @@ class Geometry extends Field
      */
     public function maxZoom(int $maxZoom): self
     {
-        $this->controls['maxZoom'] = $maxZoom;
+        $this->mapOptions['maxZoom'] = $maxZoom;
 
         return $this;
     }
@@ -171,7 +164,7 @@ class Geometry extends Field
      */
     public function minZoom(int $minZoom): self
     {
-        $this->controls['minZoom'] = $minZoom;
+        $this->mapOptions['minZoom'] = $minZoom;
 
         return $this;
     }
@@ -191,7 +184,7 @@ class Geometry extends Field
      */
     public function showZoomControl(Closure|bool $show = true): self
     {
-        $this->controls['zoomControl'] = $this->evaluate($show);
+        $this->mapOptions['zoomControl'] = $this->evaluate($show);
 
         return $this;
     }
@@ -201,7 +194,7 @@ class Geometry extends Field
      */
     public function showFullscreenControl(Closure|bool $show = true): self
     {
-        $this->controls['fullscreenControl'] = $this->evaluate($show);
+        $this->mapOptions['fullscreenControl'] = $this->evaluate($show);
 
         return $this;
     }
@@ -211,7 +204,7 @@ class Geometry extends Field
      */
     public function showAttributionControl(Closure|bool $show = true): self
     {
-        $this->controls['attributionControl'] = $this->evaluate($show);
+        $this->mapOptions['attributionControl'] = $this->evaluate($show);
 
         return $this;
     }

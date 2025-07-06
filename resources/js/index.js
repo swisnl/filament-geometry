@@ -8,7 +8,7 @@ export default function filamentGeometry($wire, config) {
         $wire: $wire,
         config: config,
         createMap: function(el) {
-            this.map = LF.map(el, config.controls)
+            this.map = LF.map(el, config.map)
 
             if (config.bounds) {
                 let southWest = LF.latLng(config.bounds.sw.lat, config.bounds.sw.lng)
