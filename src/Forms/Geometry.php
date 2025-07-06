@@ -85,7 +85,6 @@ class Geometry extends Field
         // Build config: key = DrawMode value, value = bool (selected)
         foreach (DrawMode::cases() as $mode) {
             $config['geoMan']['draw'.$mode->name] = in_array($mode, $this->drawModes, true);
-            $config['geoMan']['edit'.$mode->name] = in_array($mode, $this->drawModes, true);
         }
         $config['geoMan']['position'] = $this->drawControlPosition->value;
 
