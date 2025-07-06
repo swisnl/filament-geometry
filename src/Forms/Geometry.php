@@ -211,6 +211,16 @@ class Geometry extends Field
     /**
      * @return $this
      */
+    public function useGestureHandling(Closure|bool $show = true): self
+    {
+        $this->mapOptions['gestureHandling'] = $this->evaluate($show);
+
+        return $this;
+    }
+
+    /**
+     * @return $this
+     */
     public function markerIcon(Icon $icon): self
     {
         $this->markerIcon = $icon;
