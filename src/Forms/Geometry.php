@@ -43,7 +43,6 @@ class Geometry extends Field
      */
     private array $mapOptions = [
         'attributionControl' => true,
-        'doubleClickZoom' => 'center',
         'fullscreenControl' => true,
         'gestureHandling' => true,
         'maxZoom' => 19,
