@@ -28,9 +28,12 @@ class Geometry extends Field
     /**
      * @var array<string, mixed>
      */
-    private array $mapConfig = [
-        'bounds' => false,
-    ];
+    private array $mapConfig = [];
+
+    /**
+     * @var ?array{'sw': array{'lat': int|float, 'lng': int|float}, 'ne': array{'lat': int|float, 'lng': int|float}}
+     */
+    private ?array $bounds = null;
 
     private TileLayer $tileLayer;
 
@@ -97,6 +100,7 @@ class Geometry extends Field
         return json_encode(
             array_merge($config, [
                 'statePath' => $statePath,
+                'bounds' => $this->bounds,
                 'controls' => $this->controls,
                 'locale' => $this->locale,
                 'markerIcon' => $this->markerIcon->options(),
@@ -118,13 +122,16 @@ class Geometry extends Field
     public function boundaries(Closure|bool $on, int|float $southWestLat = 0, int|float $southWestLng = 0, int|float $northEastLat = 0, int|float $northEastLng = 0): self
     {
         if (! $this->evaluate($on)) {
-            $this->mapConfig['boundaries'] = false;
+            $this->bounds = null;
 
             return $this;
         }
 
-        $this->mapConfig['bounds']['sw'] = ['lat' => $southWestLat, 'lng' => $southWestLng];
-        $this->mapConfig['bounds']['ne'] = ['lat' => $northEastLat, 'lng' => $northEastLng];
+        $this->bounds = [
+            'sw' => ['lat' => $southWestLat, 'lng' => $southWestLng],
+            'ne' => ['lat' => $northEastLat, 'lng' => $northEastLng],
+        ];
+        $this->center(($southWestLat + $northEastLat) / 2.0, ($southWestLng + $northEastLng) / 2.0);
 
         return $this;
     }
