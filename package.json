@@ -28,6 +28,7 @@
     "dependencies": {
         "@geoman-io/leaflet-geoman-free": "^2.18",
         "leaflet": "^1.9",
+        "leaflet-gesture-handling": "^1.2.2",
         "leaflet.fullscreen": "^4.0.0"
     }
 }
