@@ -46,10 +46,10 @@ export default function filamentGeometry($wire, config) {
             this.map.pm.setGlobalOptions({
                 layerGroup: this.drawItems,
                 allowSelfIntersection: false,
+                removeLayerBelowMinVertexCount: false,
                 markerStyle: {
                     icon: this.createMarkerIcon(),
                 },
-                preventMarkerRemoval: true,
             })
 
             this.map.pm.enableGlobalEditMode()
@@ -61,21 +61,24 @@ export default function filamentGeometry($wire, config) {
 
                 if (confirm(config.lang.warning.limit)) {
                     this.drawItems.clearLayers()
-                    this.updateGeoJson()
                 } else {
                     this.map.pm.disableDraw()
                     this.map.pm.enableGlobalEditMode()
                 }
             })
 
-            this.map.on('pm:create', (e) => {
+            this.map.on('pm:create', () => {
                 this.map.pm.disableDraw()
                 this.map.pm.enableGlobalEditMode()
+            })
+
+            this.drawItems.on('pm:edit layeradd layerremove', () => {
                 this.updateGeoJson()
             })
 
-            this.drawItems.on('pm:edit', (e) => {
-                this.updateGeoJson()
+            this.drawItems.on('pm:remove', () => {
+                // Geoman doesn't properly remove the layer from the group, so we should clear it manually
+                this.drawItems.clearLayers()
             })
         },
 
