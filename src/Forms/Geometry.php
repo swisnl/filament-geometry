@@ -16,23 +16,11 @@ class Geometry extends Field
     protected string $view = 'filament-geometry::forms.geometry';
 
     /**
-     * @var array<int, \Swis\Filament\Geometry\Enums\DrawMode>
-     */
-    private array $drawModes = [
-        DrawMode::Marker,
-        DrawMode::Polygon,
-        DrawMode::Polyline,
-        DrawMode::Rectangle,
-    ];
-
-    /**
      * @var ?array{'sw': array{'lat': int|float, 'lng': int|float}, 'ne': array{'lat': int|float, 'lng': int|float}}
      */
     private ?array $bounds = null;
 
     private TileLayer $tileLayer;
-
-    private ControlPosition $drawControlPosition = ControlPosition::TopLeft;
 
     private Icon $markerIcon;
 
@@ -50,6 +38,28 @@ class Geometry extends Field
         'center' => [0, 0],
         'zoom' => 15,
         'zoomControl' => true,
+    ];
+
+    /**
+     * @var array<string, mixed>
+     */
+    private array $geomanOptions = [
+        'customControls' => false,
+        'cutPolygon' => false,
+        'drawCircle' => false,
+        'drawCircleMarker' => false,
+        'drawControls' => true,
+        'drawMarker' => true,
+        'drawPolygon' => true,
+        'drawPolyline' => true,
+        'drawRectangle' => true,
+        'drawText' => false,
+        'editControls' => false,
+        'oneBlock' => true,
+        'optionsControls' => false,
+        'position' => ControlPosition::TopLeft->value,
+        'removalMode' => false,
+        'rotateMode' => false,
     ];
 
     protected function setUp(): void
@@ -70,7 +80,10 @@ class Geometry extends Field
         foreach ($drawModes as $mode) {
             assert($mode instanceof DrawMode, 'Each drawMode must be an instance of DrawMode enum');
         }
-        $this->drawModes = $drawModes;
+
+        foreach (DrawMode::cases() as $mode) {
+            $this->geomanOptions['draw'.$mode->name] = in_array($mode, $drawModes, true);
+        }
 
         return $this;
     }
@@ -80,27 +93,19 @@ class Geometry extends Field
      */
     public function getMapConfig(): string
     {
-        $config = [];
-        $config['lang']['warning']['limit'] = __('filament-geometry::geometry.warning.limit');
-        // Build config: key = DrawMode value, value = bool (selected)
-        foreach (DrawMode::cases() as $mode) {
-            $config['geoMan']['draw'.$mode->name] = in_array($mode, $this->drawModes, true);
-        }
-        $config['geoMan']['position'] = $this->drawControlPosition->value;
-
-        return json_encode(
-            array_merge($config, [
-                'statePath' => $this->getStatePath(),
-                'bounds' => $this->bounds,
-                'map' => $this->mapOptions,
-                'locale' => $this->locale,
-                'markerIcon' => $this->markerIcon->options(),
-                'tileLayer' => [
-                    'url' => $this->tileLayer->url(),
-                    'options' => $this->tileLayer->options(),
-                ],
-            ])
-        );
+        return json_encode([
+            'statePath' => $this->getStatePath(),
+            'lang' => trans('filament-geometry::geometry'),
+            'bounds' => $this->bounds,
+            'map' => $this->mapOptions,
+            'geoman' => $this->geomanOptions,
+            'locale' => $this->locale,
+            'markerIcon' => $this->markerIcon->options(),
+            'tileLayer' => [
+                'url' => $this->tileLayer->url(),
+                'options' => $this->tileLayer->options(),
+            ],
+        ], JSON_THROW_ON_ERROR);
     }
 
     /**
@@ -232,7 +237,7 @@ class Geometry extends Field
      */
     public function drawControlPosition(ControlPosition $position): self
     {
-        $this->drawControlPosition = $position;
+        $this->geomanOptions['position'] = $position->value;
 
         return $this;
     }

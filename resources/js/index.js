@@ -24,24 +24,7 @@ export default function filamentGeometry($wire, config) {
             this.tile = LF.tileLayer(config.tileLayer.url, config.tileLayer.options).addTo(this.map)
 
             this.map.pm.setLang(config.locale, {}, 'en');
-            this.map.pm.addControls({
-                customControls: false,
-                cutPolygon: false,
-                drawCircle: false,
-                drawCircleMarker: false,
-                drawControls: true,
-                drawMarker: config.geoMan.drawMarker,
-                drawPolygon: config.geoMan.drawPolygon,
-                drawPolyline: config.geoMan.drawPolyline,
-                drawRectangle: config.geoMan.drawRectangle,
-                drawText: false,
-                editControls: false,
-                oneBlock: true,
-                optionsControls: false,
-                position: config.geoMan.position,
-                removalMode: false,
-                rotateMode: false,
-            })
+            this.map.pm.addControls(config.geoman);
 
             this.map.pm.setGlobalOptions({
                 markerStyle: {
