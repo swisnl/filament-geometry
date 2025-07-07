@@ -246,4 +246,19 @@ class Geometry extends Field
 
         return $this;
     }
+
+    /**
+     * Set extra map options. Please note, this will be merged with the existing options!
+     *
+     * @see https://leafletjs.com/reference.html#map-option for all available options
+     *
+     * @param  array<string, mixed>  $mapOptions
+     * @return $this
+     */
+    public function mapOptions(array $mapOptions): self
+    {
+        $this->mapOptions = array_merge($this->mapOptions, $mapOptions);
+
+        return $this;
+    }
 }
