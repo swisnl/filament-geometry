@@ -16,8 +16,8 @@ export default function filamentGeometry($wire, config) {
                 let bounds = LF.latLngBounds(southWest, northEast)
                 this.map.setMaxBounds(bounds)
                 this.map.fitBounds(bounds)
-                this.map.on('drag', function() {
-                    map.panInsideBounds(bounds, { animate: false })
+                this.map.on('drag', () => {
+                    this.map.panInsideBounds(bounds, { animate: false })
                 })
             }
 
