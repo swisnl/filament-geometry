@@ -266,4 +266,19 @@ class Geometry extends Field
 
         return $this;
     }
+
+    /**
+     * Set extra Geoman options. Please note, this will be merged with the existing options!
+     *
+     * @see https://geoman.io/docs/leaflet/toolbar for all available options
+     *
+     * @param  array<string, mixed>  $geomanOptions
+     * @return $this
+     */
+    public function geomanOptions(array $geomanOptions): self
+    {
+        $this->geomanOptions = array_merge($this->geomanOptions, $geomanOptions);
+
+        return $this;
+    }
 }
