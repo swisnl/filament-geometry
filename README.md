@@ -26,10 +26,17 @@ You can install the package via composer:
 composer require swisnl/filament-geometry
 ```
 
-You can publish the views using
+In an effort to align with Filament's theming methodology you will need to use a custom theme to use this plugin.
 
-```bash
-php artisan vendor:publish --tag="filament-geometry-views"
+> **Note**
+> If you have not set up a custom theme and are using a Panel follow the instructions in the [Filament Docs](https://filamentphp.com/docs/3.x/panels/themes#creating-a-custom-theme) first.
+
+Add the plugin's views to your `tailwind.config.js` file.
+
+```js
+content: [
+    '<path-to-vendor>/swisnl/filament-geometry/**/*.blade.php',
+]
 ```
 
 ## Component
