@@ -79,7 +79,7 @@ use Swis\Filament\Geometry\Forms\Geometry;
 The full set of options is as follows. Some option methods support closures, as well as direct values.
 
 ```php
-use Swis\Filament\Geometry\Enums\ControlPosition
+use Swis\Filament\Geometry\Enums\ControlPosition;
 use Swis\Filament\Geometry\Enums\DrawMode;
 use Swis\Filament\Geometry\Forms\Geometry;
 use Swis\Filament\Geometry\Icons\Marker;
