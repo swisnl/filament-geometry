@@ -40,7 +40,7 @@ export default function filamentGeometry($wire, config) {
             }
 
             // Init Geoman
-            this.map.pm.setLang(config.locale, {}, 'en');
+            this.map.pm.setLang(config.locale, undefined, 'en');
             this.map.pm.addControls(config.geoman);
 
             this.map.pm.setGlobalOptions({
