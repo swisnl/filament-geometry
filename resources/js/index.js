@@ -7,7 +7,9 @@ export default function filamentGeometry($wire, config) {
     return {
         $wire: $wire,
         config: config,
+
         createMap: function(el) {
+            // Init map
             this.map = LF.map(el, config.map)
 
             if (config.bounds) {
@@ -23,10 +25,27 @@ export default function filamentGeometry($wire, config) {
 
             this.tile = LF.tileLayer(config.tileLayer.url, config.tileLayer.options).addTo(this.map)
 
+            this.drawItems = LF.geoJSON(this.getGeoJsonFeature() ?? [], {
+                pointToLayer: (geoJsonPoint, latlng) => {
+                    return L.marker(latlng, {
+                        icon: this.createMarkerIcon(),
+                    })
+                },
+            }).addTo(this.map)
+
+            if (this.drawItems.getLayers().length > 0) {
+                this.map.fitBounds(this.drawItems.getBounds(), {
+                    maxZoom: 16,
+                })
+            }
+
+            // Init Geoman
             this.map.pm.setLang(config.locale, {}, 'en');
             this.map.pm.addControls(config.geoman);
 
             this.map.pm.setGlobalOptions({
+                layerGroup: this.drawItems,
+                allowSelfIntersection: false,
                 markerStyle: {
                     icon: this.createMarkerIcon(),
                 },
@@ -34,8 +53,6 @@ export default function filamentGeometry($wire, config) {
             })
 
             this.map.pm.enableGlobalEditMode()
-
-            this.drawItems = new LF.FeatureGroup().addTo(this.map)
 
             this.map.on('pm:drawstart', (e) => {
                 if (this.drawItems.getLayers().length === 0) {
@@ -54,40 +71,18 @@ export default function filamentGeometry($wire, config) {
             this.map.on('pm:create', (e) => {
                 this.map.pm.disableDraw()
                 this.map.pm.enableGlobalEditMode()
-
-                if (e.layer && e.layer.pm) {
-                    e.layer.pm.enable({
-                        allowSelfIntersection: false,
-                    })
-
-                    this.drawItems.addLayer(e.layer)
-                    this.updateGeoJson()
-                }
+                this.updateGeoJson()
             })
-
-            // Load existing GeoJSON if available
-            const existingGeoJsonFeature = this.getGeoJsonFeature()
-            if (existingGeoJsonFeature) {
-                this.drawItems = LF.geoJSON(existingGeoJsonFeature, {
-                    pointToLayer: (geoJsonPoint, latlng) => {
-                        return L.marker(latlng, {
-                            icon: this.createMarkerIcon(),
-                        })
-                    },
-                }).addTo(this.map)
-
-                this.map.fitBounds(this.drawItems.getBounds(), {
-                    maxZoom: 16,
-                })
-            }
 
             this.drawItems.on('pm:edit', (e) => {
                 this.updateGeoJson()
             })
         },
+
         createMarkerIcon() {
             return LF.divIcon(config.markerIcon);
         },
+
         updateGeoJson: function() {
             try {
                 this.$wire.set(config.statePath, this.drawItems.getLayers()[0] ? JSON.stringify(this.drawItems.getLayers()[0].toGeoJSON().geometry) : null, true)
