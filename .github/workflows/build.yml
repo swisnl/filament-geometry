@@ -1,0 +1,60 @@
+name: "Build dist"
+
+on:
+  push:
+    paths:
+      - 'composer.json'
+      - 'package.json'
+      - 'package-lock.json'
+      - 'postcss.config.cjs'
+      - 'resources/**/*.css'
+      - 'resources/**/*.blade.php'
+      - 'resources/**/*.js'
+      - '.github/workflows/build.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+# Allow only one concurrent build, skipping runs queued between the run in-progress and latest queued.
+# However, do NOT cancel in-progress runs as we want to allow these builds to complete.
+concurrency:
+  group: build-dist
+  cancel-in-progress: false
+
+jobs:
+  build:
+    name: build
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.head_ref }}
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: 8.3
+          coverage: none
+
+      - name: Install composer dependencies
+        uses: ramsey/composer-install@v3
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install npm dependencies
+        run: npm ci
+
+      - name: Build dist
+        run: npm run build
+
+      - name: Commit changes
+        uses: stefanzweifel/git-auto-commit-action@v6
+        with:
+          commit_message: "chore: update dist"
