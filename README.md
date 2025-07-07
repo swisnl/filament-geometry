@@ -51,10 +51,11 @@ The **Geometry** field displays a leaflet map, with a set of configuration optio
 
 ### Geometry Field
 
-> **Note:** The Geometry field expects the value to be a valid [GeoJSON](https://geojson.org/) string. Make sure your model attribute stores and retrieves GeoJSON data as a string.
+> [!IMPORTANT]  
+> This field is designed to be used in conjunction with a database column of type POINT, LINESTRING, POLYGON or GEOMETRY. It currently does not support geometry types with multiple items like MULTIPOINT, MULTILINESTRING, MULTIPOLYGON or GEOMETRYCOLLECTION. This field expects the attribute value to be a valid [GeoJSON](https://geojson.org/) string. Make sure your model attribute stores and retrieves GeoJSON data as a string.
 
 The form field can be used with no options, by simply adding this to your Filament
-Form schema:
+form schema:
 
 ```php
 use Swis\Filament\Geometry\Enums\DrawMode;
@@ -72,13 +73,10 @@ use Swis\Filament\Geometry\Forms\Geometry;
     ...
 ]
 ```
-The name used for make() must be the one you set up as your model's computed geojson
-property. Note that you can have multiple maps on a form, by adding a second computed
-property referencing a second pair of geojson fields.
 
 #### Full options
 
-The full set of options is as follows.  All option methods support closures, as well as direct values.
+The full set of options is as follows. Some option methods support closures, as well as direct values.
 
 ```php
 use Swis\Filament\Geometry\Enums\ControlPosition
