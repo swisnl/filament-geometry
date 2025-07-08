@@ -2,6 +2,16 @@
 
 All notable changes to `swisnl/filament-geometry` will be documented in this file.
 
+## 0.2.3 - 2025-07-08
+
+### What's Changed
+
+#### Changed
+
+* disable gesture handling in fullscreen mode
+
+**Full Changelog**: https://github.com/swisnl/filament-geometry/compare/0.2.2...0.2.3
+
 ## 0.2.2 - 2025-07-07
 
 ### What's Changed
