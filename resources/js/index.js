@@ -39,6 +39,15 @@ export default function filamentGeometry($wire, config) {
                 })
             }
 
+            if (config.map.gestureHandling) {
+                this.map.on('enterFullscreen', () => {
+                    this.map.gestureHandling.disable()
+                })
+                this.map.on('exitFullscreen', () => {
+                    this.map.gestureHandling.enable()
+                })
+            }
+
             // Init Geoman
             this.map.pm.setLang(config.locale, undefined, 'en');
             this.map.pm.addControls(config.geoman);
