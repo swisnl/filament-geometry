@@ -6,7 +6,7 @@
         x-load-src="{{ \Filament\Support\Facades\FilamentAsset::getAlpineComponentSrc('filament-geometry-scripts', 'swisnl/filament-geometry') }}"
         x-data="filamentGeometry($wire, {{ $getMapConfig() }})"
         wire:ignore
-        x-init="$nextTick(() => { attach($refs.map) })"
+        x-intersect.once="create($refs.map)"
     >
         <x-filament::input.wrapper class="overflow-hidden">
             <div x-ref="map" class="h-[40dvh] z-0"></div>

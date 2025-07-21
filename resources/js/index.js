@@ -8,8 +8,8 @@ export default function filamentGeometry($wire, config) {
         $wire: $wire,
         config: config,
 
-        createMap: function(el) {
-            // Init map
+        create: function(el) {
+            // Create map
             this.map = LF.map(el, config.map)
 
             if (config.bounds) {
@@ -107,32 +107,13 @@ export default function filamentGeometry($wire, config) {
             return JSON.parse(this.$wire.get(config.statePath))
         },
 
-        removeMap: function(el) {
-            this.tile.remove()
-            this.tile = null
-            this.map.off()
-            this.map.remove()
-            this.map = null
-        },
-
-        attach: function(el) {
-            this.createMap(el)
-            const observer = new IntersectionObserver(entries => {
-                entries.forEach(entry => {
-                    if (entry.intersectionRatio > 0) {
-                        if (!this.map) {
-                            this.createMap(el)
-                        }
-                    } else {
-                        this.removeMap(el)
-                    }
-                })
-            }, {
-                root: null,
-                rootMargin: '0px',
-                threshold: 1.0,
-            })
-            observer.observe(el)
+        destroy: function() {
+            if (this.map) {
+                this.map.remove();
+                this.map = null;
+            }
+            this.drawItems = null;
+            this.tile = null;
         },
     }
 }
