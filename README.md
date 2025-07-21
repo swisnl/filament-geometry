@@ -79,6 +79,7 @@ use Swis\Filament\Geometry\Forms\Geometry;
 The full set of options is as follows. Some option methods support closures, as well as direct values.
 
 ```php
+use Swis\Filament\Geometry\Bounds;
 use Swis\Filament\Geometry\Enums\ControlPosition;
 use Swis\Filament\Geometry\Enums\DrawMode;
 use Swis\Filament\Geometry\Forms\Geometry;
@@ -95,7 +96,7 @@ Geometry::make('location')
     ->minZoom(4)
     ->center(52.164206390898904, 4.491920969490259)
     ->zoom(15)
-    ->boundaries(true, 49.5, -11, 61, 2) // Example for British Isles
+    ->bounds(Bounds::make(49.5, -11, 61, 2)) // Example for British Isles
     ->tileLayer(Carto::make())
 
     // Marker configuration

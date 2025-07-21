@@ -4,6 +4,7 @@ namespace Swis\Filament\Geometry\Forms;
 
 use Closure;
 use Filament\Forms\Components\Field;
+use Swis\Filament\Geometry\Bounds;
 use Swis\Filament\Geometry\Contracts\Icon;
 use Swis\Filament\Geometry\Contracts\TileLayer;
 use Swis\Filament\Geometry\Enums\ControlPosition;
@@ -15,10 +16,7 @@ class Geometry extends Field
 {
     protected string $view = 'filament-geometry::forms.geometry';
 
-    /**
-     * @var ?array{'sw': array{'lat': int|float, 'lng': int|float}, 'ne': array{'lat': int|float, 'lng': int|float}}
-     */
-    private ?array $bounds = null;
+    private ?Bounds $bounds = null;
 
     private TileLayer $tileLayer;
 
@@ -96,7 +94,7 @@ class Geometry extends Field
         return json_encode([
             'statePath' => $this->getStatePath(),
             'lang' => trans('filament-geometry::geometry'),
-            'bounds' => $this->bounds,
+            'bounds' => $this->bounds?->toArray(),
             'map' => $this->mapOptions,
             'geoman' => $this->geomanOptions,
             'locale' => $this->locale,
@@ -113,21 +111,18 @@ class Geometry extends Field
      * a default location in the center of the box. It makes sense to
      * use this with a minimum zoom that suits the size of your map and
      * the size of the box or the way it pans back to the bounding box
-     * looks strange. You can call with $on set to false to undo this.
+     * looks strange. You can call with null to undo this.
+     *
+     * @return $this
      */
-    public function boundaries(Closure|bool $on, int|float $southWestLat = 0, int|float $southWestLng = 0, int|float $northEastLat = 0, int|float $northEastLng = 0): self
+    public function bounds(Closure|Bounds|null $bounds): self
     {
-        if (! $this->evaluate($on)) {
-            $this->bounds = null;
+        $this->bounds = $this->evaluate($bounds);
 
-            return $this;
+        if ($this->bounds) {
+            $center = $this->bounds->center();
+            $this->center($center['lat'], $center['lng']);
         }
-
-        $this->bounds = [
-            'sw' => ['lat' => $southWestLat, 'lng' => $southWestLng],
-            'ne' => ['lat' => $northEastLat, 'lng' => $northEastLng],
-        ];
-        $this->center(($southWestLat + $northEastLat) / 2.0, ($southWestLng + $northEastLng) / 2.0);
 
         return $this;
     }
