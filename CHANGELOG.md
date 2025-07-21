@@ -2,6 +2,20 @@
 
 All notable changes to `swisnl/filament-geometry` will be documented in this file.
 
+## 0.3.0 - 2025-07-21
+
+### What's Changed
+
+#### Changed
+
+* boundaries function is renamed to bounds and now expects a bounds object
+
+#### Fixed
+
+* destroy map, drawItems and tile after closing filament form modal by @pjotrvdh in https://github.com/swisnl/filament-geometry/pull/12
+
+**Full Changelog**: https://github.com/swisnl/filament-geometry/compare/0.2.3...0.3.0
+
 ## 0.2.3 - 2025-07-08
 
 ### What's Changed
