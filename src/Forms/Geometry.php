@@ -4,7 +4,7 @@ namespace Swis\Filament\Geometry\Forms;
 
 use Closure;
 use Filament\Forms\Components\Field;
-use Swis\Filament\Geometry\Bounds;
+use Swis\Filament\Geometry\Contracts\Bounds;
 use Swis\Filament\Geometry\Contracts\Icon;
 use Swis\Filament\Geometry\Contracts\TileLayer;
 use Swis\Filament\Geometry\Enums\ControlPosition;

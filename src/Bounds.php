@@ -2,7 +2,9 @@
 
 namespace Swis\Filament\Geometry;
 
-final readonly class Bounds
+use Swis\Filament\Geometry\Contracts\Bounds as BoundsContract;
+
+final readonly class Bounds implements BoundsContract
 {
     public function __construct(
         public float $southWestLat,
