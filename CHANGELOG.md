@@ -2,6 +2,16 @@
 
 All notable changes to `swisnl/filament-geometry` will be documented in this file.
 
+## 0.4.0 - TBD
+
+### What's Changed
+
+#### Changed
+
+* Upgrade to Filament 4.x compatibility
+
+**Full Changelog**: https://github.com/swisnl/filament-geometry/compare/0.3.0...0.4.0
+
 ## 0.3.0 - 2025-07-21
 
 ### What's Changed
