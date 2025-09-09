@@ -29,7 +29,7 @@ composer require swisnl/filament-geometry
 In an effort to align with Filament's theming methodology you will need to use a custom theme to use this plugin.
 
 > **Note**
-> If you have not set up a custom theme and are using a Panel follow the instructions in the [Filament Docs](https://filamentphp.com/docs/3.x/panels/themes#creating-a-custom-theme) first.
+> If you have not set up a custom theme and are using a Panel follow the instructions in the [Filament Docs](https://filamentphp.com/docs/4.x/panels/themes#creating-a-custom-theme) first.
 
 Add the plugin's views to your `tailwind.config.js` file.
 
