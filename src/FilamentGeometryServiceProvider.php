@@ -29,11 +29,24 @@ class FilamentGeometryServiceProvider extends PackageServiceProvider
     {
         // Asset Registration
         FilamentAsset::register(
-            assets: [
-                Assets\AlpineComponent::make('filament-geometry-scripts', __DIR__.'/../resources/dist/filament-geometry.js'),
-                Assets\Css::make('filament-geometry-styles', __DIR__.'/../resources/dist/filament-geometry.css')->loadedOnRequest(),
-            ],
-            package: 'swisnl/filament-geometry'
+            $this->getAssets(),
+            $this->getAssetPackageName()
         );
+    }
+
+    protected function getAssetPackageName(): ?string
+    {
+        return 'swisnl/filament-geometry';
+    }
+
+    /**
+     * @return array<\Filament\Support\Assets\Asset>
+     */
+    protected function getAssets(): array
+    {
+        return [
+            Assets\AlpineComponent::make('filament-geometry-scripts', __DIR__.'/../resources/dist/filament-geometry.js'),
+            Assets\Css::make('filament-geometry-styles', __DIR__.'/../resources/dist/filament-geometry.css')->loadedOnRequest(),
+        ];
     }
 }
