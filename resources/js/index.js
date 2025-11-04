@@ -2,6 +2,8 @@ import * as LF from 'leaflet';
 import 'leaflet.fullscreen';
 import 'leaflet-gesture-handling';
 import '@geoman-io/leaflet-geoman-free';
+import combine from '@turf/combine';
+import flatten from '@turf/flatten';
 
 export default function filamentGeometry($wire, config) {
     return {
@@ -30,6 +32,23 @@ export default function filamentGeometry($wire, config) {
                     return L.marker(latlng, {
                         icon: this.createMarkerIcon(),
                     })
+                },
+                onEachFeature: (feature, layer) => {
+                    layer.pm.getShape = function () {
+                        switch (feature.type) {
+                            case 'Point':
+                            case 'MultiPoint':
+                                return 'Marker';
+                            case 'LineString':
+                            case 'MultiLineString':
+                                return 'Line';
+                            case 'Polygon':
+                            case 'MultiPolygon':
+                                return 'Polygon';
+                            default:
+                                throw new Error(`Unsupported feature type: ${feature.type}`);
+                        }
+                    }
                 },
             }).addTo(this.map)
 
@@ -68,11 +87,21 @@ export default function filamentGeometry($wire, config) {
                     return;
                 }
 
-                if (confirm(config.lang.warning.limit)) {
-                    this.drawItems.clearLayers()
-                } else {
-                    this.map.pm.disableDraw()
-                    this.map.pm.enableGlobalEditMode()
+                const allowedShapes = [this.drawItems.getLayers()[0].pm.getShape()];
+                if (allowedShapes[0] === 'Rectangle') {
+                    allowedShapes.push('Polygon')
+                } else if (allowedShapes[0] === 'Polygon') {
+                    allowedShapes.push('Rectangle')
+                }
+                const allowedShapeEnabled = allowedShapes.some((shape) => this.map.pm.Draw[shape].enabled())
+
+                if (!this.config.multipart || !allowedShapeEnabled) {
+                    if (confirm(this.config.multipart ? config.lang.warning.limit_multipart : config.lang.warning.limit)) {
+                        this.drawItems.clearLayers()
+                    } else {
+                        this.map.pm.disableDraw()
+                        this.map.pm.enableGlobalEditMode()
+                    }
                 }
             })
 
@@ -97,14 +126,25 @@ export default function filamentGeometry($wire, config) {
 
         updateGeoJson: function() {
             try {
-                this.$wire.set(config.statePath, this.drawItems.getLayers()[0] ? JSON.stringify(this.drawItems.getLayers()[0].toGeoJSON().geometry) : null, true)
+                let value = null;
+                if (this.drawItems.getLayers().length) {
+                    if (this.config.multipart) {
+                        value = combine(this.drawItems.toGeoJSON()).features[0].geometry;
+                    } else {
+                        value = this.drawItems.getLayers()[0].toGeoJSON().geometry;
+                    }
+                }
+
+                this.$wire.set(config.statePath, value ? JSON.stringify(value) : null, true)
             } catch (error) {
                 console.error('Error updating GeoJSON:', error)
             }
         },
 
         getGeoJsonFeature: function() {
-            return JSON.parse(this.$wire.get(config.statePath))
+            const parsed = JSON.parse(this.$wire.get(config.statePath))
+
+            return parsed ? flatten(parsed).features.map(feature => feature.geometry) : null
         },
 
         destroy: function() {
