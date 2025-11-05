@@ -107,6 +107,7 @@ Geometry::make('location')
     ->showFullscreenControl(true)
     ->showZoomControl(true)
     ->showAttributionControl(true)
+    ->geoSearch(null)
     ->drawModes([
         DrawMode::Polygon,
         DrawMode::Rectangle,

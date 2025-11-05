@@ -2,8 +2,15 @@ import * as LF from 'leaflet';
 import 'leaflet.fullscreen';
 import 'leaflet-gesture-handling';
 import '@geoman-io/leaflet-geoman-free';
+import * as GeoSearch from 'leaflet-geosearch';
+import PDOKProvider from './providers/pdok.js';
 import combine from '@turf/combine';
 import flatten from '@turf/flatten';
+
+const geoSearchProviders = Object.fromEntries([
+    ...Object.entries(GeoSearch).filter(([key]) => key.endsWith('Provider')),
+    ['PDOKProvider', PDOKProvider]
+]);
 
 export default function filamentGeometry($wire, config) {
     return {
@@ -65,6 +72,25 @@ export default function filamentGeometry($wire, config) {
                 this.map.on('exitFullscreen', () => {
                     this.map.gestureHandling.enable()
                 })
+            }
+
+            if (config.geoSearch.provider) {
+                if (!geoSearchProviders[config.geoSearch.provider.name]) {
+                    throw new Error(`Unsupported GeoSearch provider: ${config.geoSearch.provider.name}`);
+                }
+
+                const search = new GeoSearch.GeoSearchControl({
+                    ...config.geoSearch,
+                    provider: new geoSearchProviders[config.geoSearch.provider.name](config.geoSearch.provider.options),
+                    resultFormat: ({ result }) => `${result.highlight || result.label}`,
+                    searchLabel: config.lang.geo_search.search_label,
+                    clearSearchLabel: config.lang.geo_search.clear_search_label,
+                    notFoundMessage: config.lang.geo_search.not_found_message,
+                });
+                // Fix until https://github.com/smeijer/leaflet-geosearch/pull/436 lands
+                search.searchElement.input.setAttribute('name', 'geosearch')
+
+                this.map.addControl(search);
             }
 
             // Init Geoman
