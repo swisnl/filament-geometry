@@ -24,6 +24,8 @@ class Geometry extends Field
 
     private string $locale = 'en';
 
+    private bool $multipart = false;
+
     /**
      * @var array<string, mixed>
      */
@@ -87,6 +89,16 @@ class Geometry extends Field
     }
 
     /**
+     * @return $this
+     */
+    public function multipart(bool $multipart = true): self
+    {
+        $this->multipart = $multipart;
+
+        return $this;
+    }
+
+    /**
      * Create json configuration string
      */
     public function getMapConfig(): string
@@ -97,6 +109,7 @@ class Geometry extends Field
             'bounds' => $this->bounds?->toArray(),
             'map' => $this->mapOptions,
             'geoman' => $this->geomanOptions,
+            'multipart' => $this->multipart,
             'locale' => $this->locale,
             'markerIcon' => $this->markerIcon->options(),
             'tileLayer' => [

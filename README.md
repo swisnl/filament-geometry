@@ -53,7 +53,7 @@ The **Geometry** field displays a leaflet map, with a set of configuration optio
 ### Geometry Field
 
 > [!IMPORTANT]  
-> This field is designed to be used in conjunction with a database column of type `POINT`, `LINESTRING`, `POLYGON` or `GEOMETRY`. It currently does not support geometry types with multiple items like `MULTIPOINT`, `MULTILINESTRING`, `MULTIPOLYGON` or `GEOMETRYCOLLECTION`. This field expects the attribute value to be a valid [GeoJSON](https://geojson.org/) string. Make sure your model attribute stores and retrieves GeoJSON data as a string.
+> This field is designed to be used in conjunction with a database column of type `(MULTI)POINT`, `(MULTI)LINESTRING`, `(MULTI)POLYGON` or `GEOMETRY`. It currently does not support geometries with mixed types i.e. `GEOMETRYCOLLECTION`. This field expects the attribute value to be a valid [GeoJSON](https://geojson.org/) string. Make sure your model attribute stores and retrieves GeoJSON data as a string.
 
 The form field can be used with no options, by simply adding this to your Filament
 form schema:
@@ -111,6 +111,7 @@ Geometry::make('location')
         DrawMode::Polygon,
         DrawMode::Rectangle,
     ])
+    ->multipart(false)
     ->drawControlPosition(ControlPosition::TopRight)
 ```
 
