@@ -2,6 +2,16 @@
 
 All notable changes to `swisnl/filament-geometry` will be documented in this file.
 
+## 0.5.0 - 2025-11-05
+
+### What's Changed
+
+#### Added
+
+* Allow multipart geometries by @JaZo in https://github.com/swisnl/filament-geometry/pull/19
+
+**Full Changelog**: https://github.com/swisnl/filament-geometry/compare/0.4.0...0.5.0
+
 ## 0.4.0 - 2025-09-19
 
 ### What's Changed
