@@ -5,12 +5,14 @@ namespace Swis\Filament\Geometry\Forms;
 use Closure;
 use Filament\Forms\Components\Field;
 use Swis\Filament\Geometry\Contracts\Bounds;
+use Swis\Filament\Geometry\Contracts\GeoSearchProvider;
 use Swis\Filament\Geometry\Contracts\Icon;
 use Swis\Filament\Geometry\Contracts\TileLayer;
 use Swis\Filament\Geometry\Enums\ControlPosition;
 use Swis\Filament\Geometry\Enums\DrawMode;
+use Swis\Filament\Geometry\GeoSearchProviders\OpenStreetMap as OpenStreetMapGeoSearchProvider;
 use Swis\Filament\Geometry\Icons\Marker;
-use Swis\Filament\Geometry\TileLayers\OpenStreetMap;
+use Swis\Filament\Geometry\TileLayers\OpenStreetMap as OpenStreetMapTileLayer;
 
 class Geometry extends Field
 {
@@ -40,6 +42,16 @@ class Geometry extends Field
         'zoomControl' => true,
     ];
 
+    private ?GeoSearchProvider $geoSearchProvider = null;
+
+    /**
+     * @var array<string, mixed>
+     */
+    private array $geoSearchOptions = [
+        'style' => 'bar',
+        'showMarker' => false,
+    ];
+
     /**
      * @var array<string, mixed>
      */
@@ -67,7 +79,8 @@ class Geometry extends Field
         parent::setUp();
 
         $this->columnSpanFull()
-            ->tileLayer(OpenStreetMap::make())
+            ->tileLayer(OpenStreetMapTileLayer::make())
+            ->geoSearch(OpenStreetMapGeoSearchProvider::make())
             ->markerIcon(Marker::make())
             ->locale(config('app.locale', $this->locale));
     }
@@ -108,6 +121,13 @@ class Geometry extends Field
             'lang' => trans('filament-geometry::geometry'),
             'bounds' => $this->bounds?->toArray(),
             'map' => $this->mapOptions,
+            'geoSearch' => [
+                ...$this->geoSearchOptions,
+                'provider' => $this->geoSearchProvider ? [
+                    'name' => $this->geoSearchProvider->name(),
+                    'options' => $this->geoSearchProvider->options(),
+                ] : null,
+            ],
             'geoman' => $this->geomanOptions,
             'multipart' => $this->multipart,
             'locale' => $this->locale,
@@ -186,6 +206,16 @@ class Geometry extends Field
     public function tileLayer(TileLayer $tileLayer): self
     {
         $this->tileLayer = $tileLayer;
+
+        return $this;
+    }
+
+    /**
+     * @return $this
+     */
+    public function geoSearch(?GeoSearchProvider $provider): self
+    {
+        $this->geoSearchProvider = $provider;
 
         return $this;
     }
@@ -286,6 +316,21 @@ class Geometry extends Field
     public function geomanOptions(array $geomanOptions): self
     {
         $this->geomanOptions = array_merge($this->geomanOptions, $geomanOptions);
+
+        return $this;
+    }
+
+    /**
+     * Set extra GeoSearch options. Please note, this will be merged with the existing options!
+     *
+     * @see https://leaflet-geosearch.meijer.works/usage for all available options
+     *
+     * @param  array<string, mixed>  $geoSearchOptions
+     * @return $this
+     */
+    public function geoSearchOptions(array $geoSearchOptions): self
+    {
+        $this->geoSearchOptions = array_merge($this->geoSearchOptions, $geoSearchOptions);
 
         return $this;
     }
