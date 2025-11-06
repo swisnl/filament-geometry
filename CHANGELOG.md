@@ -2,6 +2,16 @@
 
 All notable changes to `swisnl/filament-geometry` will be documented in this file.
 
+## 0.6.0 - 2025-11-06
+
+### What's Changed
+
+#### Added
+
+* Add GeoSearch by @JaZo in https://github.com/swisnl/filament-geometry/pull/20
+
+**Full Changelog**: https://github.com/swisnl/filament-geometry/compare/0.5.0...0.6.0
+
 ## 0.5.0 - 2025-11-05
 
 ### What's Changed
