@@ -60,12 +60,14 @@ The form field can be used with no options, by simply adding this to your Filame
 ```php
 use Swis\Filament\Geometry\Enums\DrawMode;
 use Swis\Filament\Geometry\Forms\Geometry;
-...
-->schema[
-    ...
-    Geometry::make('location'),
-    ...
-]
+
+public function form(Form $form): Form
+{
+    return $form
+        ->schema([
+            Geometry::make('location'),
+        ]);
+}
 ```
 
 #### Full options
@@ -81,33 +83,37 @@ use Swis\Filament\Geometry\GeoSearchProviders\OpenStreetMap;
 use Swis\Filament\Geometry\Icons\Marker;
 use Swis\Filament\Geometry\TileLayers\Carto;
 
-...
-
-Geometry::make('location')
-    ->label(__('Location'))
-
-    // Map configuration
-    ->maxZoom(16)
-    ->minZoom(4)
-    ->center(52.164206390898904, 4.491920969490259)
-    ->zoom(15)
-    ->bounds(Bounds::make(49.5, -11, 61, 2)) // Example for British Isles
-    ->tileLayer(Carto::make())
-
-    // Marker configuration
-    ->markerIcon(Marker::make('#3b82f6'))
-    
-    // Controls
-    ->showFullscreenControl(true)
-    ->showZoomControl(true)
-    ->showAttributionControl(true)
-    ->geoSearch(OpenStreetMap::make())
-    ->drawModes([
-        DrawMode::Polygon,
-        DrawMode::Rectangle,
-    ])
-    ->multipart(false)
-    ->drawControlPosition(ControlPosition::TopRight)
+public function form(Form $form): Form
+{
+    return $form
+        ->schema([
+            Geometry::make('location')
+                ->label(__('Location'))
+            
+                // Map configuration
+                ->maxZoom(16)
+                ->minZoom(4)
+                ->center(52.164206390898904, 4.491920969490259)
+                ->zoom(15)
+                ->bounds(Bounds::make(49.5, -11, 61, 2)) // Example for British Isles
+                ->tileLayer(Carto::make())
+            
+                // Marker configuration
+                ->markerIcon(Marker::make('#3b82f6'))
+                
+                // Controls
+                ->showFullscreenControl(true)
+                ->showZoomControl(true)
+                ->showAttributionControl(true)
+                ->geoSearch(OpenStreetMap::make())
+                ->drawModes([
+                    DrawMode::Polygon,
+                    DrawMode::Rectangle,
+                ])
+                ->multipart(false)
+                ->drawControlPosition(ControlPosition::TopRight),
+        ]);
+}
 ```
 
 ## Testing
