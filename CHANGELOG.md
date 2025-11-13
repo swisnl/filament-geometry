@@ -2,6 +2,16 @@
 
 All notable changes to `swisnl/filament-geometry` will be documented in this file.
 
+## 0.6.1 - 2025-11-13
+
+### What's Changed
+
+#### Fixed
+
+* Watch for changes from Filament/Livewire by @JaZo in https://github.com/swisnl/filament-geometry/pull/22
+
+**Full Changelog**: https://github.com/swisnl/filament-geometry/compare/0.6.0...0.6.1
+
 ## 0.6.0 - 2025-11-06
 
 ### What's Changed
