@@ -58,6 +58,7 @@ The **Geometry** field displays a Leaflet map, with a set of configuration optio
 The form field can be used with no options, by simply adding this to your Filament form schema:
 
 ```php
+use Filament\Forms\Form;
 use Swis\Filament\Geometry\Enums\DrawMode;
 use Swis\Filament\Geometry\Forms\Geometry;
 
@@ -75,6 +76,7 @@ public function form(Form $form): Form
 The full set of options is as follows. Some option methods support closures, as well as direct values.
 
 ```php
+use Filament\Forms\Form;
 use Swis\Filament\Geometry\Bounds;
 use Swis\Filament\Geometry\Enums\ControlPosition;
 use Swis\Filament\Geometry\Enums\DrawMode;
