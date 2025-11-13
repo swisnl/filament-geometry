@@ -18,6 +18,11 @@
             "name": "Pjotr van der Horst",
             "email": "pvanderhorst@swis.nl",
             "role": "Developer"
+        },
+        {
+            "name": "Jasper Zonneveld",
+            "email": "jasper@swis.nl",
+            "role": "Developer"
         }
     ],
     "require": {

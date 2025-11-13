@@ -55,8 +55,7 @@ The **Geometry** field displays a leaflet map, with a set of configuration optio
 > [!IMPORTANT]  
 > This field is designed to be used in conjunction with a database column of type `(MULTI)POINT`, `(MULTI)LINESTRING`, `(MULTI)POLYGON` or `GEOMETRY`. It currently does not support geometries with mixed types i.e. `GEOMETRYCOLLECTION`. This field expects the attribute value to be a valid [GeoJSON](https://geojson.org/) string. Make sure your model attribute stores and retrieves GeoJSON data as a string.
 
-The form field can be used with no options, by simply adding this to your Filament
-form schema:
+The form field can be used with no options, by simply adding this to your Filament form schema:
 
 ```php
 use Swis\Filament\Geometry\Enums\DrawMode;
@@ -137,6 +136,7 @@ Please review [our security policy](https://github.com/swisnl/filament-geometry/
 ## Credits
 
 - [Pjotr van der Horst](https://github.com/pjotrvdh)
+- [Jasper Zonneveld](https://github.com/JaZo)
 - [All Contributors](https://github.com/swisnl/filament-geometry/contributors)
 
 ## License
