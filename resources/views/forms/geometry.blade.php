@@ -4,7 +4,7 @@
         x-load
         x-load-css="[@js(\Filament\Support\Facades\FilamentAsset::getStyleHref('filament-geometry-styles', 'swisnl/filament-geometry'))]"
         x-load-src="{{ \Filament\Support\Facades\FilamentAsset::getAlpineComponentSrc('filament-geometry-scripts', 'swisnl/filament-geometry') }}"
-        x-data="filamentGeometry($wire, {{ $getMapConfig() }})"
+        x-data="filamentGeometry($wire, $watch, {{ $getMapConfig() }})"
         wire:ignore
         x-intersect.once="create($refs.map)"
     >
