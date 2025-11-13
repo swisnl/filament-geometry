@@ -44,7 +44,7 @@ After setting up a custom theme add the plugin's views to your theme css file or
 
 ### Geometry Field
 
-The **Geometry** field displays a leaflet map, with a set of configuration options.
+The **Geometry** field displays a Leaflet map, with a set of configuration options.
 
 ![Map Field](art/screenshot.png)
 
@@ -63,13 +63,7 @@ use Swis\Filament\Geometry\Forms\Geometry;
 ...
 ->schema[
     ...
-    Geometry::make('location')
-        ->drawModes([
-            DrawMode::Marker,
-            DrawMode::Polygon,
-            DrawMode::Polyline,
-            DrawMode::Rectangle,
-        ]),
+    Geometry::make('location'),
     ...
 ]
 ```
@@ -83,6 +77,7 @@ use Swis\Filament\Geometry\Bounds;
 use Swis\Filament\Geometry\Enums\ControlPosition;
 use Swis\Filament\Geometry\Enums\DrawMode;
 use Swis\Filament\Geometry\Forms\Geometry;
+use Swis\Filament\Geometry\GeoSearchProviders\OpenStreetMap;
 use Swis\Filament\Geometry\Icons\Marker;
 use Swis\Filament\Geometry\TileLayers\Carto;
 
@@ -106,7 +101,7 @@ Geometry::make('location')
     ->showFullscreenControl(true)
     ->showZoomControl(true)
     ->showAttributionControl(true)
-    ->geoSearch(null)
+    ->geoSearch(OpenStreetMap::make())
     ->drawModes([
         DrawMode::Polygon,
         DrawMode::Rectangle,
