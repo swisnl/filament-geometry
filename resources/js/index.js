@@ -12,12 +12,24 @@ const geoSearchProviders = Object.fromEntries([
     ['PDOKProvider', PDOKProvider]
 ]);
 
-export default function filamentGeometry($wire, config) {
+LF.GeoJSON.include({
+    withoutEvents(callback) {
+        const originalFire = this.fire;
+        this.fire = () => this;
+        callback();
+        this.fire = originalFire;
+    },
+});
+
+export default function filamentGeometry($wire, $watch, config) {
     return {
         $wire: $wire,
         config: config,
 
-        create: function(el) {
+        value: $wire.entangle(config.statePath),
+        ignoreNextValueUpdate: false,
+
+        create(el) {
             // Create map
             this.map = LF.map(el, config.map)
 
@@ -32,39 +44,6 @@ export default function filamentGeometry($wire, config) {
                 })
             }
 
-            this.tile = LF.tileLayer(config.tileLayer.url, config.tileLayer.options).addTo(this.map)
-
-            this.drawItems = LF.geoJSON(this.getGeoJsonFeature() ?? [], {
-                pointToLayer: (geoJsonPoint, latlng) => {
-                    return L.marker(latlng, {
-                        icon: this.createMarkerIcon(),
-                    })
-                },
-                onEachFeature: (feature, layer) => {
-                    layer.pm.getShape = function () {
-                        switch (feature.type) {
-                            case 'Point':
-                            case 'MultiPoint':
-                                return 'Marker';
-                            case 'LineString':
-                            case 'MultiLineString':
-                                return 'Line';
-                            case 'Polygon':
-                            case 'MultiPolygon':
-                                return 'Polygon';
-                            default:
-                                throw new Error(`Unsupported feature type: ${feature.type}`);
-                        }
-                    }
-                },
-            }).addTo(this.map)
-
-            if (this.drawItems.getLayers().length > 0) {
-                this.map.fitBounds(this.drawItems.getBounds(), {
-                    maxZoom: 16,
-                })
-            }
-
             if (config.map.gestureHandling) {
                 this.map.on('enterFullscreen', () => {
                     this.map.gestureHandling.disable()
@@ -74,6 +53,10 @@ export default function filamentGeometry($wire, config) {
                 })
             }
 
+            // Create tile layer
+            this.tile = LF.tileLayer(config.tileLayer.url, config.tileLayer.options).addTo(this.map)
+
+            // Init geo search
             if (config.geoSearch.provider) {
                 if (!geoSearchProviders[config.geoSearch.provider.name]) {
                     throw new Error(`Unsupported GeoSearch provider: ${config.geoSearch.provider.name}`);
@@ -93,6 +76,24 @@ export default function filamentGeometry($wire, config) {
                 this.map.addControl(search);
             }
 
+            // Add geometries to map
+            this.drawItems = this.getLeafletLayer().addTo(this.map)
+
+            this.fitGeometryBounds()
+
+            // Watch for changes coming from Livewire
+            $watch('geoJsonFeature', () => {
+                if (!this.ignoreNextValueUpdate) {
+                    this.drawItems.withoutEvents(() => {
+                        this.drawItems.clearLayers()
+                        this.getLeafletLayer().eachLayer(layer => this.drawItems.addLayer(layer))
+                    })
+
+                    this.fitGeometryBounds()
+                }
+                this.ignoreNextValueUpdate = false;
+            })
+
             // Init Geoman
             this.map.pm.setLang(config.locale, undefined, 'en');
             this.map.pm.addControls(config.geoman);
@@ -108,7 +109,7 @@ export default function filamentGeometry($wire, config) {
 
             this.map.pm.enableGlobalEditMode()
 
-            this.map.on('pm:drawstart', (e) => {
+            this.map.on('pm:drawstart', () => {
                 if (this.drawItems.getLayers().length === 0) {
                     return;
                 }
@@ -150,7 +151,15 @@ export default function filamentGeometry($wire, config) {
             return LF.divIcon(config.markerIcon);
         },
 
-        updateGeoJson: function() {
+        fitGeometryBounds() {
+            if (this.drawItems.getLayers().length > 0) {
+                this.map.fitBounds(this.drawItems.getBounds(), {
+                    maxZoom: 16,
+                })
+            }
+        },
+
+        updateGeoJson() {
             try {
                 let value = null;
                 if (this.drawItems.getLayers().length) {
@@ -161,19 +170,47 @@ export default function filamentGeometry($wire, config) {
                     }
                 }
 
-                this.$wire.set(config.statePath, value ? JSON.stringify(value) : null, true)
+                this.ignoreNextValueUpdate = true;
+                this.value = value ? JSON.stringify(value) : null;
             } catch (error) {
                 console.error('Error updating GeoJSON:', error)
             }
         },
 
-        getGeoJsonFeature: function() {
-            const parsed = JSON.parse(this.$wire.get(config.statePath))
+        get geoJsonFeature() {
+            const parsed = this.value ? JSON.parse(this.value) : null;
 
             return parsed ? flatten(parsed).features.map(feature => feature.geometry) : null
         },
 
-        destroy: function() {
+        getLeafletLayer() {
+            return LF.geoJSON(this.geoJsonFeature ?? [], {
+                pointToLayer: (geoJsonPoint, latlng) => {
+                    return L.marker(latlng, {
+                        icon: this.createMarkerIcon(),
+                    })
+                },
+                onEachFeature: (feature, layer) => {
+                    layer.pm.getShape = function () {
+                        switch (feature.type) {
+                            case 'Point':
+                            case 'MultiPoint':
+                                return 'Marker';
+                            case 'LineString':
+                            case 'MultiLineString':
+                                return 'Line';
+                            case 'Polygon':
+                            case 'MultiPolygon':
+                                return 'Polygon';
+                            default:
+                                throw new Error(`Unsupported feature type: ${feature.type}`);
+                        }
+                    }
+                },
+            })
+        },
+
+        destroy() {
             if (this.map) {
                 this.map.remove();
                 this.map = null;
