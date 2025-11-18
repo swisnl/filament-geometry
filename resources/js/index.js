@@ -141,9 +141,9 @@ export default function filamentGeometry($wire, $watch, config) {
                 this.updateGeoJson()
             })
 
-            this.drawItems.on('pm:remove', () => {
-                // Geoman doesn't properly remove the layer from the group, so we should clear it manually
-                this.drawItems.clearLayers()
+            this.drawItems.on('pm:remove', (e) => {
+                // Geoman doesn't properly remove the layer from the group, so we should do that ourselves
+                this.drawItems.removeLayer(e.layer)
             })
         },
 
