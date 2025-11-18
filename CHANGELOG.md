@@ -2,6 +2,16 @@
 
 All notable changes to `swisnl/filament-geometry` will be documented in this file.
 
+## 0.6.2 - 2025-11-18
+
+### What's Changed
+
+#### Fixed
+
+* Only remove one marker at a time by @JaZo in https://github.com/swisnl/filament-geometry/commit/2e087d764764b4c37bf21a770236ed34ff4fbb2a
+
+**Full Changelog**: https://github.com/swisnl/filament-geometry/compare/0.6.1...0.6.2
+
 ## 0.6.1 - 2025-11-13
 
 ### What's Changed
