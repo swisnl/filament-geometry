@@ -53,7 +53,7 @@ The **Geometry** field displays a Leaflet map, with a set of configuration optio
 ### Geometry Field
 
 > [!IMPORTANT]  
-> This field is designed to be used in conjunction with a database column of type `(MULTI)POINT`, `(MULTI)LINESTRING`, `(MULTI)POLYGON` or `GEOMETRY`. It currently does not support geometries with mixed types i.e. `GEOMETRYCOLLECTION`. This field expects the attribute value to be a valid [GeoJSON](https://geojson.org/) string. Make sure your model attribute stores and retrieves GeoJSON data as a string.
+> This field is designed to be used in conjunction with a database column of type `(MULTI)POINT`, `(MULTI)LINESTRING`, `(MULTI)POLYGON` or `GEOMETRY`. It currently does not support geometries with mixed types i.e. `GEOMETRYCOLLECTION`.
 
 The form field can be used with no options, by simply adding this to your Filament form schema:
 
@@ -114,6 +114,37 @@ public function form(Form $form): Form
                 ])
                 ->multipart(false)
                 ->drawControlPosition(ControlPosition::TopRight),
+        ]);
+}
+```
+
+#### Casts
+
+The field automatically tries to detect the type of your attribute by checking the model's casts. We currently support the following casts out of the box:
+
+- `string` (or `encrypted`)
+- `array` (or `encrypted:array`)
+- `object` (or `encrypted:object`)
+- Geometries from [matanyadaev/laravel-eloquent-spatial](https://github.com/MatanYadaev/laravel-eloquent-spatial)
+
+If we cannot detect the type automatically, you can specify it manually using one of the following methods:
+
+```php
+use Filament\Forms\Form;
+use Swis\Filament\Geometry\Forms\Geometry;
+
+public function form(Form $form): Form
+{
+    return $form
+        ->schema([
+            Geometry::make('location')
+                // Use one of the following state cast methods:
+                ->asString()
+                ->asArray()
+                ->asObject()
+                ->asEloquentSpatial()
+                // Or use a custom state cast that implements \Filament\Schemas\Components\StateCasts\Contracts\StateCast:
+                ->stateCast(new YourCustomStateCast()),
         ]);
 }
 ```
