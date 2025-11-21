@@ -12,10 +12,40 @@ use Swis\Filament\Geometry\Enums\ControlPosition;
 use Swis\Filament\Geometry\Enums\DrawMode;
 use Swis\Filament\Geometry\GeoSearchProviders\OpenStreetMap as OpenStreetMapGeoSearchProvider;
 use Swis\Filament\Geometry\Icons\Marker;
+use Swis\Filament\Geometry\StateCasts\ArrayStateCast;
+use Swis\Filament\Geometry\StateCasts\EloquentSpatialStateCast;
+use Swis\Filament\Geometry\StateCasts\ObjectStateCast;
+use Swis\Filament\Geometry\StateCasts\StringStateCast;
 use Swis\Filament\Geometry\TileLayers\OpenStreetMap as OpenStreetMapTileLayer;
 
 class Geometry extends Field
 {
+    protected const CAST_TYPES_STRING = [
+        'string',
+        'encrypted',
+    ];
+
+    protected const CAST_TYPES_ARRAY = [
+        'array',
+        'encrypted:array',
+    ];
+
+    protected const CAST_TYPES_OBJECT = [
+        'object',
+        'encrypted:object',
+    ];
+
+    protected const CAST_TYPES_ELOQUENT_SPATIAL = [
+        \MatanYadaev\EloquentSpatial\Objects\Point::class,
+        \MatanYadaev\EloquentSpatial\Objects\MultiPoint::class,
+        \MatanYadaev\EloquentSpatial\Objects\LineString::class,
+        \MatanYadaev\EloquentSpatial\Objects\MultiLineString::class,
+        \MatanYadaev\EloquentSpatial\Objects\Polygon::class,
+        \MatanYadaev\EloquentSpatial\Objects\MultiPolygon::class,
+        \MatanYadaev\EloquentSpatial\Objects\Geometry::class,
+        \MatanYadaev\EloquentSpatial\Objects\GeometryCollection::class,
+    ];
+
     protected string $view = 'filament-geometry::forms.geometry';
 
     private ?Bounds $bounds = null;
@@ -83,6 +113,46 @@ class Geometry extends Field
             ->geoSearch(OpenStreetMapGeoSearchProvider::make())
             ->markerIcon(Marker::make())
             ->locale(config('app.locale', $this->locale));
+    }
+
+    /**
+     * @return array<\Filament\Schemas\Components\StateCasts\Contracts\StateCast>
+     */
+    public function getDefaultStateCasts(): array
+    {
+        if ($this->hasCustomStateCasts() || ! $model = $this->getModelInstance()) {
+            return parent::getDefaultStateCasts();
+        }
+
+        $cast = match (true) {
+            $model->hasCast($this->getName(), self::CAST_TYPES_STRING) => StringStateCast::class,
+            $model->hasCast($this->getName(), self::CAST_TYPES_ARRAY) => ArrayStateCast::class,
+            $model->hasCast($this->getName(), self::CAST_TYPES_OBJECT) => ObjectStateCast::class,
+            $model->hasCast($this->getName(), self::CAST_TYPES_ELOQUENT_SPATIAL) => EloquentSpatialStateCast::class,
+            default => StringStateCast::class,
+        };
+
+        return [app($cast)];
+    }
+
+    public function asString(): self
+    {
+        return $this->stateCast(app(StringStateCast::class));
+    }
+
+    public function asArray(): self
+    {
+        return $this->stateCast(app(ArrayStateCast::class));
+    }
+
+    public function asObject(): self
+    {
+        return $this->stateCast(app(ObjectStateCast::class));
+    }
+
+    public function asEloquentSpatial(): self
+    {
+        return $this->stateCast(app(EloquentSpatialStateCast::class));
     }
 
     /**
