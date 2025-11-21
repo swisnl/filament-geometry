@@ -2,6 +2,16 @@
 
 All notable changes to `swisnl/filament-geometry` will be documented in this file.
 
+## 0.7.0 - 2025-11-21
+
+### What's Changed
+
+#### Added
+
+* Support array, object, and [Eloquent spatial](https://github.com/MatanYadaev/laravel-eloquent-spatial) casts by @JaZo in https://github.com/swisnl/filament-geometry/pull/24
+
+**Full Changelog**: https://github.com/swisnl/filament-geometry/compare/0.6.2...0.7.0
+
 ## 0.6.2 - 2025-11-18
 
 ### What's Changed
