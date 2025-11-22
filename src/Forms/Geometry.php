@@ -88,6 +88,7 @@ class Geometry extends Field
     private array $geomanOptions = [
         'customControls' => false,
         'cutPolygon' => false,
+        'dragMode' => false,
         'drawCircle' => false,
         'drawCircleMarker' => false,
         'drawControls' => true,
@@ -96,11 +97,12 @@ class Geometry extends Field
         'drawPolyline' => true,
         'drawRectangle' => true,
         'drawText' => false,
-        'editControls' => false,
+        'editControls' => true,
+        'editMode' => false,
         'oneBlock' => true,
         'optionsControls' => false,
         'position' => ControlPosition::TopLeft->value,
-        'removalMode' => false,
+        'removalMode' => true,
         'rotateMode' => false,
     ];
 

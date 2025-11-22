@@ -142,6 +142,12 @@ export default function filamentGeometry($wire, $watch, config) {
                 this.map.pm.enableGlobalEditMode()
             })
 
+            this.map.on('pm:globalremovalmodetoggled', (e) => {
+                if (e.enabled === false) {
+                    this.map.pm.enableGlobalEditMode()
+                }
+            })
+
             this.drawItems.on('pm:edit layeradd layerremove', () => {
                 this.updateGeoJson()
             })
