@@ -24,18 +24,23 @@ LF.GeoJSON.include({
 export default function filamentGeometry($wire, $watch, config) {
     return {
         $wire: $wire,
+        $watch: $watch,
         config: config,
 
         value: $wire.entangle(config.statePath),
         ignoreNextValueUpdate: false,
 
+        map: null,
+        tile: null,
+        drawItems: null,
+
         create(el) {
             // Create map
-            this.map = LF.map(el, config.map)
+            this.map = LF.map(el, this.config.map)
 
-            if (config.bounds) {
-                let southWest = LF.latLng(config.bounds.sw.lat, config.bounds.sw.lng)
-                let northEast = LF.latLng(config.bounds.ne.lat, config.bounds.ne.lng)
+            if (this.config.bounds) {
+                let southWest = LF.latLng(this.config.bounds.sw.lat, this.config.bounds.sw.lng)
+                let northEast = LF.latLng(this.config.bounds.ne.lat, this.config.bounds.ne.lng)
                 let bounds = LF.latLngBounds(southWest, northEast)
                 this.map.setMaxBounds(bounds)
                 this.map.fitBounds(bounds)
@@ -44,7 +49,7 @@ export default function filamentGeometry($wire, $watch, config) {
                 })
             }
 
-            if (config.map.gestureHandling) {
+            if (this.config.map.gestureHandling) {
                 this.map.on('enterFullscreen', () => {
                     this.map.gestureHandling.disable()
                 })
@@ -54,21 +59,21 @@ export default function filamentGeometry($wire, $watch, config) {
             }
 
             // Create tile layer
-            this.tile = LF.tileLayer(config.tileLayer.url, config.tileLayer.options).addTo(this.map)
+            this.tile = LF.tileLayer(this.config.tileLayer.url, this.config.tileLayer.options).addTo(this.map)
 
             // Init geo search
-            if (config.geoSearch.provider) {
-                if (!geoSearchProviders[config.geoSearch.provider.name]) {
-                    throw new Error(`Unsupported GeoSearch provider: ${config.geoSearch.provider.name}`);
+            if (this.config.geoSearch.provider) {
+                if (!geoSearchProviders[this.config.geoSearch.provider.name]) {
+                    throw new Error(`Unsupported GeoSearch provider: ${this.config.geoSearch.provider.name}`);
                 }
 
                 const search = new GeoSearch.GeoSearchControl({
-                    ...config.geoSearch,
-                    provider: new geoSearchProviders[config.geoSearch.provider.name](config.geoSearch.provider.options),
+                    ...this.config.geoSearch,
+                    provider: new geoSearchProviders[this.config.geoSearch.provider.name](this.config.geoSearch.provider.options),
                     resultFormat: ({ result }) => `${result.highlight || result.label}`,
-                    searchLabel: config.lang.geo_search.search_label,
-                    clearSearchLabel: config.lang.geo_search.clear_search_label,
-                    notFoundMessage: config.lang.geo_search.not_found_message,
+                    searchLabel: this.config.lang.geo_search.search_label,
+                    clearSearchLabel: this.config.lang.geo_search.clear_search_label,
+                    notFoundMessage: this.config.lang.geo_search.not_found_message,
                 });
                 // Fix until https://github.com/smeijer/leaflet-geosearch/pull/436 lands
                 search.searchElement.input.setAttribute('name', 'geosearch')
@@ -82,7 +87,7 @@ export default function filamentGeometry($wire, $watch, config) {
             this.fitGeometryBounds()
 
             // Watch for changes coming from Livewire
-            $watch('geoJsonFeature', () => {
+            this.$watch('geoJsonFeature', () => {
                 if (!this.ignoreNextValueUpdate) {
                     this.drawItems.withoutEvents(() => {
                         this.drawItems.clearLayers()
@@ -95,8 +100,8 @@ export default function filamentGeometry($wire, $watch, config) {
             })
 
             // Init Geoman
-            this.map.pm.setLang(config.locale, undefined, 'en');
-            this.map.pm.addControls(config.geoman);
+            this.map.pm.setLang(this.config.locale, undefined, 'en');
+            this.map.pm.addControls(this.config.geoman);
 
             this.map.pm.setGlobalOptions({
                 layerGroup: this.drawItems,
@@ -123,7 +128,7 @@ export default function filamentGeometry($wire, $watch, config) {
                 const allowedShapeEnabled = allowedShapes.some((shape) => this.map.pm.Draw[shape].enabled())
 
                 if (!this.config.multipart || !allowedShapeEnabled) {
-                    if (confirm(this.config.multipart ? config.lang.warning.limit_multipart : config.lang.warning.limit)) {
+                    if (confirm(this.config.multipart ? this.config.lang.warning.limit_multipart : this.config.lang.warning.limit)) {
                         this.drawItems.clearLayers()
                     } else {
                         this.map.pm.disableDraw()
@@ -148,7 +153,7 @@ export default function filamentGeometry($wire, $watch, config) {
         },
 
         createMarkerIcon() {
-            return LF.divIcon(config.markerIcon);
+            return LF.divIcon(this.config.markerIcon);
         },
 
         fitGeometryBounds() {
