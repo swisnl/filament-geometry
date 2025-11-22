@@ -2,6 +2,16 @@
 
 All notable changes to `swisnl/filament-geometry` will be documented in this file.
 
+## 0.7.1 - 2025-11-22
+
+### What's Changed
+
+#### Fixed
+
+* Properly initialize component state by @JaZo in https://github.com/swisnl/filament-geometry/commit/ec382f7d3d85b69ac55bb90a6eeb6a6fe049abcf
+
+**Full Changelog**: https://github.com/swisnl/filament-geometry/compare/0.7.0...0.7.1
+
 ## 0.7.0 - 2025-11-21
 
 ### What's Changed
