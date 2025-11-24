@@ -142,7 +142,7 @@ export default function filamentGeometry($wire, $watch, config) {
                 this.map.pm.enableGlobalEditMode()
             })
 
-            this.map.on('pm:globalremovalmodetoggled', (e) => {
+            this.map.on('pm:globaldragmodetoggled pm:globalremovalmodetoggled pm:globalcutmodetoggled pm:globalrotatemodetoggled', (e) => {
                 if (e.enabled === false) {
                     this.map.pm.enableGlobalEditMode()
                 }
