@@ -26,11 +26,6 @@ You can install the package via composer:
 composer require swisnl/filament-geometry
 ```
 
-> **Important**
-> This package requires Filament 4.x. For Filament 3.x compatibility, use version 0.3.x of this package.
-
-In an effort to align with Filament's theming methodology you will need to use a custom theme to use this plugin.
-
 > [!IMPORTANT]
 > If you have not set up a custom theme and are using Filament Panels follow the instructions in the [Filament Docs](https://filamentphp.com/docs/4.x/styling/overview#creating-a-custom-theme) first.
 
