@@ -2,6 +2,20 @@
 
 All notable changes to `swisnl/filament-geometry` will be documented in this file.
 
+## 0.7.2 - 2025-11-24
+
+### What's Changed
+
+#### Changed
+
+* Enable removal mode by default by @JaZo in https://github.com/swisnl/filament-geometry/commit/058eeb596268c24e22bac631e141f0f0ba5e910c
+
+#### Fixed
+
+* Enable global edit mode after drag, cut and rotate mode are disabled by @JaZo in https://github.com/swisnl/filament-geometry/commit/825bf97c18e3aea0e4eaa1f4fcb5d424f239252d
+
+**Full Changelog**: https://github.com/swisnl/filament-geometry/compare/0.7.1...0.7.2
+
 ## 0.7.1 - 2025-11-22
 
 ### What's Changed
