@@ -62,7 +62,7 @@ export default function filamentGeometry($wire, $watch, config) {
             this.tile = LF.tileLayer(this.config.tileLayer.url, this.config.tileLayer.options).addTo(this.map)
 
             // Init geo search
-            if (this.config.geoSearch.provider) {
+            if (this.config.geoSearch.provider && !this.config.disabled) {
                 if (!geoSearchProviders[this.config.geoSearch.provider.name]) {
                     throw new Error(`Unsupported GeoSearch provider: ${this.config.geoSearch.provider.name}`);
                 }
@@ -98,6 +98,10 @@ export default function filamentGeometry($wire, $watch, config) {
                 }
                 this.ignoreNextValueUpdate = false;
             })
+
+            if (this.config.disabled) {
+                return;
+            }
 
             // Init Geoman
             this.map.pm.setLang(this.config.locale, undefined, 'en');
@@ -201,6 +205,7 @@ export default function filamentGeometry($wire, $watch, config) {
                         icon: this.createMarkerIcon(),
                     })
                 },
+                interactive: !this.config.disabled,
                 onEachFeature: (feature, layer) => {
                     layer.pm.getShape = function () {
                         switch (feature.type) {

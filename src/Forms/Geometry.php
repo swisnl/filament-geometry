@@ -184,11 +184,11 @@ class Geometry extends Field
     }
 
     /**
-     * Create json configuration string
+     * Create configuration array
      */
-    public function getMapConfig(): string
+    public function getMapConfig(): array
     {
-        return json_encode([
+        return [
             'statePath' => $this->getStatePath(),
             'lang' => trans('filament-geometry::geometry'),
             'bounds' => $this->bounds?->toArray(),
@@ -208,7 +208,7 @@ class Geometry extends Field
                 'url' => $this->tileLayer->url(),
                 'options' => $this->tileLayer->options(),
             ],
-        ], JSON_THROW_ON_ERROR);
+        ];
     }
 
     /**
