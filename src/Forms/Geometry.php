@@ -185,6 +185,8 @@ class Geometry extends Field
 
     /**
      * Create configuration array
+     *
+     * @return array<string, mixed>
      */
     public function getMapConfig(): array
     {
