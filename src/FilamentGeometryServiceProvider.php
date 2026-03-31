@@ -3,6 +3,7 @@
 namespace Swis\Filament\Geometry;
 
 use Filament\Support\Assets;
+use Filament\Support\Assets\Asset;
 use Filament\Support\Facades\FilamentAsset;
 use Spatie\LaravelPackageTools\Commands\InstallCommand;
 use Spatie\LaravelPackageTools\Package;
@@ -40,7 +41,7 @@ class FilamentGeometryServiceProvider extends PackageServiceProvider
     }
 
     /**
-     * @return array<\Filament\Support\Assets\Asset>
+     * @return array<Asset>
      */
     protected function getAssets(): array
     {

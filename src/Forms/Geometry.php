@@ -4,6 +4,14 @@ namespace Swis\Filament\Geometry\Forms;
 
 use Closure;
 use Filament\Forms\Components\Field;
+use Filament\Schemas\Components\StateCasts\Contracts\StateCast;
+use MatanYadaev\EloquentSpatial\Objects\GeometryCollection;
+use MatanYadaev\EloquentSpatial\Objects\LineString;
+use MatanYadaev\EloquentSpatial\Objects\MultiLineString;
+use MatanYadaev\EloquentSpatial\Objects\MultiPoint;
+use MatanYadaev\EloquentSpatial\Objects\MultiPolygon;
+use MatanYadaev\EloquentSpatial\Objects\Point;
+use MatanYadaev\EloquentSpatial\Objects\Polygon;
 use Swis\Filament\Geometry\Contracts\Bounds;
 use Swis\Filament\Geometry\Contracts\GeoSearchProvider;
 use Swis\Filament\Geometry\Contracts\Icon;
@@ -36,14 +44,14 @@ class Geometry extends Field
     ];
 
     protected const CAST_TYPES_ELOQUENT_SPATIAL = [
-        \MatanYadaev\EloquentSpatial\Objects\Point::class,
-        \MatanYadaev\EloquentSpatial\Objects\MultiPoint::class,
-        \MatanYadaev\EloquentSpatial\Objects\LineString::class,
-        \MatanYadaev\EloquentSpatial\Objects\MultiLineString::class,
-        \MatanYadaev\EloquentSpatial\Objects\Polygon::class,
-        \MatanYadaev\EloquentSpatial\Objects\MultiPolygon::class,
+        Point::class,
+        MultiPoint::class,
+        LineString::class,
+        MultiLineString::class,
+        Polygon::class,
+        MultiPolygon::class,
         \MatanYadaev\EloquentSpatial\Objects\Geometry::class,
-        \MatanYadaev\EloquentSpatial\Objects\GeometryCollection::class,
+        GeometryCollection::class,
     ];
 
     protected string $view = 'filament-geometry::forms.geometry';
@@ -118,7 +126,7 @@ class Geometry extends Field
     }
 
     /**
-     * @return array<\Filament\Schemas\Components\StateCasts\Contracts\StateCast>
+     * @return array<StateCast>
      */
     public function getDefaultStateCasts(): array
     {
@@ -158,7 +166,7 @@ class Geometry extends Field
     }
 
     /**
-     * @param  \Swis\Filament\Geometry\Enums\DrawMode[]  $drawModes
+     * @param  DrawMode[]  $drawModes
      */
     public function drawModes(array $drawModes = []): self
     {
