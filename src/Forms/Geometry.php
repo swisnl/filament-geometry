@@ -5,6 +5,7 @@ namespace Swis\Filament\Geometry\Forms;
 use Closure;
 use Filament\Forms\Components\Field;
 use Filament\Schemas\Components\StateCasts\Contracts\StateCast;
+use MatanYadaev\EloquentSpatial\Objects\Geometry as EloquentSpatialGeometry;
 use MatanYadaev\EloquentSpatial\Objects\GeometryCollection;
 use MatanYadaev\EloquentSpatial\Objects\LineString;
 use MatanYadaev\EloquentSpatial\Objects\MultiLineString;
@@ -50,7 +51,7 @@ class Geometry extends Field
         MultiLineString::class,
         Polygon::class,
         MultiPolygon::class,
-        \MatanYadaev\EloquentSpatial\Objects\Geometry::class,
+        EloquentSpatialGeometry::class,
         GeometryCollection::class,
     ];
 
