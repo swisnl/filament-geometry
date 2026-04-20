@@ -3,14 +3,12 @@ import 'leaflet.fullscreen';
 import 'leaflet-gesture-handling';
 import '@geoman-io/leaflet-geoman-free';
 import * as GeoSearch from 'leaflet-geosearch';
-import PDOKProvider from './providers/pdok.js';
 import combine from '@turf/combine';
 import flatten from '@turf/flatten';
 
-const geoSearchProviders = Object.fromEntries([
-    ...Object.entries(GeoSearch).filter(([key]) => key.endsWith('Provider')),
-    ['PDOKProvider', PDOKProvider]
-]);
+const geoSearchProviders = Object.fromEntries(
+    Object.entries(GeoSearch).filter(([key]) => key.endsWith('Provider'))
+);
 
 LF.GeoJSON.include({
     withoutEvents(callback) {
