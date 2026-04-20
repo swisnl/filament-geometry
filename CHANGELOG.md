@@ -2,6 +2,26 @@
 
 All notable changes to `swisnl/filament-geometry` will be documented in this file.
 
+## 0.8.0 - 2026-04-20
+
+### What's Changed
+
+#### Fixed
+
+* Make sure the input gets a red border on error by @JaZo in https://github.com/swisnl/filament-geometry/commit/cc3285551c0c3a37bb4b919b0bf8b748c88d6633
+* Disable edit features when input is disabled by @JaZo in https://github.com/swisnl/filament-geometry/commit/1ed11508a5a3d84c68f8b1be20f5af4b52749a85
+* Only combine features when there's more than one by @JaZo in https://github.com/swisnl/filament-geometry/commit/0f983f3717bd9092cbd00d8c2d219670f32cf2c8
+
+#### Changed
+
+* The (undocumented) PDOKProvider has been renamed to PdokNlProvider
+
+#### Chore
+
+* Updated dependencies
+
+**Full Changelog**: https://github.com/swisnl/filament-geometry/compare/0.7.2...0.8.0
+
 ## 0.7.2 - 2025-11-24
 
 ### What's Changed
