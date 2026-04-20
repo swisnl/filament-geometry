@@ -1,10 +1,10 @@
 import * as LF from 'leaflet';
-import 'leaflet.fullscreen';
+import { FullScreen } from 'leaflet.fullscreen';
 import 'leaflet-gesture-handling';
 import '@geoman-io/leaflet-geoman-free';
 import * as GeoSearch from 'leaflet-geosearch';
-import combine from '@turf/combine';
-import flatten from '@turf/flatten';
+import { combine } from '@turf/combine';
+import { flatten } from '@turf/flatten';
 
 const geoSearchProviders = Object.fromEntries(
     Object.entries(GeoSearch).filter(([key]) => key.endsWith('Provider'))
@@ -35,6 +35,7 @@ export default function filamentGeometry($wire, $watch, config) {
         create(el) {
             // Create map
             this.map = LF.map(el, this.config.map)
+            this.map.addControl(new FullScreen())
 
             if (this.config.bounds) {
                 let southWest = LF.latLng(this.config.bounds.sw.lat, this.config.bounds.sw.lng)
