@@ -26,7 +26,7 @@
         "@turf/combine": "^6.5.0",
         "@turf/flatten": "^6.5.0",
         "leaflet": "^1.9",
-        "leaflet-geosearch": "^4.2.2",
+        "leaflet-geosearch": "^4.4.0",
         "leaflet-gesture-handling": "^1.2.2",
         "leaflet.fullscreen": "^4.0.0"
     }
