@@ -178,7 +178,7 @@ export default function filamentGeometry($wire, $watch, config) {
             try {
                 let value = null;
                 if (this.drawItems.getLayers().length) {
-                    if (this.config.multipart) {
+                    if (this.config.multipart && this.drawItems.getLayers().length > 1) {
                         value = combine(this.drawItems.toGeoJSON()).features[0].geometry;
                     } else {
                         value = this.drawItems.getLayers()[0].toGeoJSON().geometry;
