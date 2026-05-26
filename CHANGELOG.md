@@ -2,6 +2,16 @@
 
 All notable changes to `swisnl/filament-geometry` will be documented in this file.
 
+## 0.8.1 - 2026-05-26
+
+### What's Changed
+
+#### Fixed
+
+* Add Filament 5.x compatibility by @pjotrvdh in https://github.com/swisnl/filament-geometry/pull/31
+
+**Full Changelog**: https://github.com/swisnl/filament-geometry/compare/0.8.0...0.8.1
+
 ## 0.8.0 - 2026-04-20
 
 ### What's Changed
