@@ -11,11 +11,23 @@ class ArrayStateCast implements StateCast
      */
     public function get(mixed $state): ?array
     {
+        return self::decode($state);
+    }
+
+    /**
+     * @return array<string, mixed>|null
+     */
+    public static function decode(mixed $state): ?array
+    {
         if (blank($state)) {
             return null;
         }
 
-        return json_decode($state, true, flags: JSON_THROW_ON_ERROR);
+        try {
+            return json_decode($state, true, flags: JSON_THROW_ON_ERROR);
+        } catch (\JsonException) {
+            return null;
+        }
     }
 
     public function set(mixed $state): ?string
