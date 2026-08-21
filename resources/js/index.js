@@ -25,7 +25,7 @@ export default function filamentGeometry($wire, $watch, config) {
         $watch: $watch,
         config: config,
 
-        value: $wire.entangle(config.statePath),
+        value: config.statePath ? $wire.entangle(config.statePath) : config.value,
         ignoreNextValueUpdate: false,
 
         map: null,
@@ -61,7 +61,7 @@ export default function filamentGeometry($wire, $watch, config) {
             this.tile = LF.tileLayer(this.config.tileLayer.url, this.config.tileLayer.options).addTo(this.map)
 
             // Init geo search
-            if (this.config.geoSearch.provider && !this.config.disabled) {
+            if (this.config.geoSearch?.provider && !this.config.disabled) {
                 if (!geoSearchProviders[this.config.geoSearch.provider.name]) {
                     throw new Error(`Unsupported GeoSearch provider: ${this.config.geoSearch.provider.name}`);
                 }
@@ -192,7 +192,9 @@ export default function filamentGeometry($wire, $watch, config) {
         },
 
         get geoJsonFeature() {
-            const parsed = this.value ? JSON.parse(this.value) : null;
+            const parsed = typeof this.value === 'string'
+                ? (this.value ? JSON.parse(this.value) : null)
+                : (this.value ?? null);
 
             return parsed ? flatten(parsed).features.map(feature => feature.geometry) : null
         },

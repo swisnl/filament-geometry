@@ -43,6 +43,10 @@ The **Geometry** field displays a Leaflet map, with a set of configuration optio
 
 ![Map Field](art/screenshot.png)
 
+### Geometry Infolist Entry
+
+The **Geometry** infolist entry displays a read-only Leaflet map showing the geometry stored in a database column.
+
 ## Usage
 
 ### Geometry Field
@@ -143,6 +147,64 @@ public function form(Form $form): Form
         ]);
 }
 ```
+
+### Geometry Infolist Entry
+
+> [!IMPORTANT]  
+> Like the form field, this entry is designed to be used with a database column of type `(MULTI)POINT`, `(MULTI)LINESTRING`, `(MULTI)POLYGON` or `GEOMETRY`. It currently does not support geometries with mixed types i.e. `GEOMETRYCOLLECTION`.
+
+The infolist entry can be used with no options, by simply adding this to your Filament infolist schema:
+
+```php
+use Filament\Infolists\Infolist;
+use Swis\Filament\Geometry\Infolists\Geometry;
+
+public function infolist(Infolist $infolist): Infolist
+{
+    return $infolist
+        ->schema([
+            Geometry::make('location'),
+        ]);
+}
+```
+
+#### Full options
+
+```php
+use Filament\Infolists\Infolist;
+use Swis\Filament\Geometry\Bounds;
+use Swis\Filament\Geometry\Infolists\Geometry;
+use Swis\Filament\Geometry\Icons\Marker;
+use Swis\Filament\Geometry\TileLayers\Carto;
+
+public function infolist(Infolist $infolist): Infolist
+{
+    return $infolist
+        ->schema([
+            Geometry::make('location')
+                ->label(__('Location'))
+
+                // Map configuration
+                ->maxZoom(16)
+                ->minZoom(4)
+                ->center(52.164206390898904, 4.491920969490259)
+                ->zoom(15)
+                ->bounds(Bounds::make(49.5, -11, 61, 2)) // Example for British Isles
+                ->tileLayer(Carto::make())
+
+                // Marker configuration
+                ->markerIcon(Marker::make('#3b82f6'))
+
+                // Controls
+                ->showFullscreenControl(true)
+                ->showZoomControl(true)
+                ->showAttributionControl(true)
+                ->useGestureHandling(true),
+        ]);
+}
+```
+
+Unlike the form field, the entry automatically detects the shape of the resolved value at runtime (a JSON string, a plain array, a decoded object, or a `matanyadaev/laravel-eloquent-spatial` geometry instance) — there is no need to configure a state cast manually.
 
 ## Testing
 
