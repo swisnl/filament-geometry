@@ -2,6 +2,16 @@
 
 All notable changes to `swisnl/filament-geometry` will be documented in this file.
 
+## 0.8.2 - 2026-10-27
+
+### What's Changed
+
+* build(deps): bump actions/checkout from 6 to 7 by @dependabot[bot] in https://github.com/swisnl/filament-geometry/pull/32
+* build(deps): bump actions/setup-node from 6 to 7 by @dependabot[bot] in https://github.com/swisnl/filament-geometry/pull/33
+* feat: add infolist field by @pjotrvdh in https://github.com/swisnl/filament-geometry/pull/34
+
+**Full Changelog**: https://github.com/swisnl/filament-geometry/compare/0.8.1...0.8.2
+
 ## 0.8.1 - 2026-05-26
 
 ### What's Changed
