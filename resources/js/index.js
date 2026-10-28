@@ -20,6 +20,12 @@ LF.GeoJSON.include({
 });
 
 export default function filamentGeometry($wire, $watch, config) {
+    // Leaflet objects are kept outside Alpine's reactive data: Alpine would wrap them in a proxy, which Leaflet doesn't
+    // recognize as the same object in its own event bookkeeping, so e.g. an open popup misses zoom updates
+    let map = null
+    let tile = null
+    let drawItems = null
+
     return {
         $wire: $wire,
         $watch: $watch,
@@ -28,37 +34,33 @@ export default function filamentGeometry($wire, $watch, config) {
         value: config.statePath ? $wire.entangle(config.statePath) : config.value,
         ignoreNextValueUpdate: false,
 
-        map: null,
-        tile: null,
-        drawItems: null,
-
         create(el) {
             // Create map
-            this.map = LF.map(el, this.config.map)
-            this.map.addControl(new FullScreen())
+            map = LF.map(el, this.config.map)
+            map.addControl(new FullScreen())
 
             if (this.config.bounds) {
                 let southWest = LF.latLng(this.config.bounds.sw.lat, this.config.bounds.sw.lng)
                 let northEast = LF.latLng(this.config.bounds.ne.lat, this.config.bounds.ne.lng)
                 let bounds = LF.latLngBounds(southWest, northEast)
-                this.map.setMaxBounds(bounds)
-                this.map.fitBounds(bounds)
-                this.map.on('drag', () => {
-                    this.map.panInsideBounds(bounds, { animate: false })
+                map.setMaxBounds(bounds)
+                map.fitBounds(bounds)
+                map.on('drag', () => {
+                    map.panInsideBounds(bounds, { animate: false })
                 })
             }
 
             if (this.config.map.gestureHandling) {
-                this.map.on('enterFullscreen', () => {
-                    this.map.gestureHandling.disable()
+                map.on('enterFullscreen', () => {
+                    map.gestureHandling.disable()
                 })
-                this.map.on('exitFullscreen', () => {
-                    this.map.gestureHandling.enable()
+                map.on('exitFullscreen', () => {
+                    map.gestureHandling.enable()
                 })
             }
 
             // Create tile layer
-            this.tile = LF.tileLayer(this.config.tileLayer.url, this.config.tileLayer.options).addTo(this.map)
+            tile = LF.tileLayer(this.config.tileLayer.url, this.config.tileLayer.options).addTo(map)
 
             // Init geo search
             if (this.config.geoSearch?.provider && !this.config.disabled) {
@@ -77,20 +79,20 @@ export default function filamentGeometry($wire, $watch, config) {
                 // Fix until https://github.com/smeijer/leaflet-geosearch/pull/436 lands
                 search.searchElement.input.setAttribute('name', 'geosearch')
 
-                this.map.addControl(search);
+                map.addControl(search);
             }
 
             // Add geometries to map
-            this.drawItems = this.getLeafletLayer().addTo(this.map)
+            drawItems = this.getLeafletLayer().addTo(map)
 
             this.fitGeometryBounds()
 
             // Watch for changes coming from Livewire
-            this.$watch('geoJsonFeature', () => {
+            this.$watch('features', () => {
                 if (!this.ignoreNextValueUpdate) {
-                    this.drawItems.withoutEvents(() => {
-                        this.drawItems.clearLayers()
-                        this.getLeafletLayer().eachLayer(layer => this.drawItems.addLayer(layer))
+                    drawItems.withoutEvents(() => {
+                        drawItems.clearLayers()
+                        this.getLeafletLayer().eachLayer(layer => drawItems.addLayer(layer))
                     })
 
                     this.fitGeometryBounds()
@@ -103,11 +105,11 @@ export default function filamentGeometry($wire, $watch, config) {
             }
 
             // Init Geoman
-            this.map.pm.setLang(this.config.locale, undefined, 'en');
-            this.map.pm.addControls(this.config.geoman);
+            map.pm.setLang(this.config.locale, undefined, 'en');
+            map.pm.addControls(this.config.geoman);
 
-            this.map.pm.setGlobalOptions({
-                layerGroup: this.drawItems,
+            map.pm.setGlobalOptions({
+                layerGroup: drawItems,
                 allowSelfIntersection: false,
                 removeLayerBelowMinVertexCount: false,
                 markerStyle: {
@@ -115,49 +117,49 @@ export default function filamentGeometry($wire, $watch, config) {
                 },
             })
 
-            this.map.pm.enableGlobalEditMode()
+            map.pm.enableGlobalEditMode()
 
-            this.map.on('pm:drawstart', () => {
-                if (this.drawItems.getLayers().length === 0) {
+            map.on('pm:drawstart', () => {
+                if (drawItems.getLayers().length === 0) {
                     return;
                 }
 
-                const allowedShapes = [this.drawItems.getLayers()[0].pm.getShape()];
+                const allowedShapes = [drawItems.getLayers()[0].pm.getShape()];
                 if (allowedShapes[0] === 'Rectangle') {
                     allowedShapes.push('Polygon')
                 } else if (allowedShapes[0] === 'Polygon') {
                     allowedShapes.push('Rectangle')
                 }
-                const allowedShapeEnabled = allowedShapes.some((shape) => this.map.pm.Draw[shape].enabled())
+                const allowedShapeEnabled = allowedShapes.some((shape) => map.pm.Draw[shape].enabled())
 
                 if (!this.config.multipart || !allowedShapeEnabled) {
                     if (confirm(this.config.multipart ? this.config.lang.warning.limit_multipart : this.config.lang.warning.limit)) {
-                        this.drawItems.clearLayers()
+                        drawItems.clearLayers()
                     } else {
-                        this.map.pm.disableDraw()
-                        this.map.pm.enableGlobalEditMode()
+                        map.pm.disableDraw()
+                        map.pm.enableGlobalEditMode()
                     }
                 }
             })
 
-            this.map.on('pm:create', () => {
-                this.map.pm.disableDraw()
-                this.map.pm.enableGlobalEditMode()
+            map.on('pm:create', () => {
+                map.pm.disableDraw()
+                map.pm.enableGlobalEditMode()
             })
 
-            this.map.on('pm:globaldragmodetoggled pm:globalremovalmodetoggled pm:globalcutmodetoggled pm:globalrotatemodetoggled', (e) => {
+            map.on('pm:globaldragmodetoggled pm:globalremovalmodetoggled pm:globalcutmodetoggled pm:globalrotatemodetoggled', (e) => {
                 if (e.enabled === false) {
-                    this.map.pm.enableGlobalEditMode()
+                    map.pm.enableGlobalEditMode()
                 }
             })
 
-            this.drawItems.on('pm:edit layeradd layerremove', () => {
+            drawItems.on('pm:edit layeradd layerremove', () => {
                 this.updateGeoJson()
             })
 
-            this.drawItems.on('pm:remove', (e) => {
+            drawItems.on('pm:remove', (e) => {
                 // Geoman doesn't properly remove the layer from the group, so we should do that ourselves
-                this.drawItems.removeLayer(e.layer)
+                drawItems.removeLayer(e.layer)
             })
         },
 
@@ -166,8 +168,8 @@ export default function filamentGeometry($wire, $watch, config) {
         },
 
         fitGeometryBounds() {
-            if (this.drawItems.getLayers().length > 0) {
-                this.map.fitBounds(this.drawItems.getBounds(), {
+            if (drawItems.getLayers().length > 0) {
+                map.fitBounds(drawItems.getBounds(), {
                     maxZoom: 16,
                 })
             }
@@ -176,11 +178,11 @@ export default function filamentGeometry($wire, $watch, config) {
         updateGeoJson() {
             try {
                 let value = null;
-                if (this.drawItems.getLayers().length) {
-                    if (this.config.multipart && this.drawItems.getLayers().length > 1) {
-                        value = combine(this.drawItems.toGeoJSON()).features[0].geometry;
+                if (drawItems.getLayers().length) {
+                    if (this.config.multipart && drawItems.getLayers().length > 1) {
+                        value = combine(drawItems.toGeoJSON()).features[0].geometry;
                     } else {
-                        value = this.drawItems.getLayers()[0].toGeoJSON().geometry;
+                        value = drawItems.getLayers()[0].toGeoJSON().geometry;
                     }
                 }
 
@@ -191,25 +193,43 @@ export default function filamentGeometry($wire, $watch, config) {
             }
         },
 
-        get geoJsonFeature() {
+        get features() {
             const parsed = typeof this.value === 'string'
                 ? (this.value ? JSON.parse(this.value) : null)
                 : (this.value ?? null);
 
-            return parsed ? flatten(parsed).features.map(feature => feature.geometry) : null
+            return parsed ? flatten(parsed).features : null
+        },
+
+        hasPopup(feature) {
+            return this.config.popups === true && typeof feature.properties?.popup === 'string'
+        },
+
+        isInteractive(feature) {
+            return !this.config.disabled || this.hasPopup(feature)
         },
 
         getLeafletLayer() {
-            return LF.geoJSON(this.geoJsonFeature ?? [], {
-                pointToLayer: (geoJsonPoint, latlng) => {
+            return LF.geoJSON(this.features ?? [], {
+                pointToLayer: (feature, latlng) => {
                     return L.marker(latlng, {
                         icon: this.createMarkerIcon(),
+                        interactive: this.isInteractive(feature),
                     })
                 },
-                interactive: !this.config.disabled,
+                // Leaflet reads `interactive` when a vector layer is first rendered, so it's set per feature here
+                style: (feature) => ({
+                    interactive: this.isInteractive(feature),
+                }),
                 onEachFeature: (feature, layer) => {
+                    if (this.hasPopup(feature)) {
+                        layer.bindPopup(feature.properties.popup, {
+                            className: 'fi-geometry-popup-ctn',
+                        })
+                    }
+
                     layer.pm.getShape = function () {
-                        switch (feature.type) {
+                        switch (feature.geometry.type) {
                             case 'Point':
                             case 'MultiPoint':
                                 return 'Marker';
@@ -220,7 +240,7 @@ export default function filamentGeometry($wire, $watch, config) {
                             case 'MultiPolygon':
                                 return 'Polygon';
                             default:
-                                throw new Error(`Unsupported feature type: ${feature.type}`);
+                                throw new Error(`Unsupported feature type: ${feature.geometry.type}`);
                         }
                     }
                 },
@@ -228,12 +248,12 @@ export default function filamentGeometry($wire, $watch, config) {
         },
 
         destroy() {
-            if (this.map) {
-                this.map.remove();
-                this.map = null;
+            if (map) {
+                map.remove();
+                map = null;
             }
-            this.drawItems = null;
-            this.tile = null;
+            drawItems = null;
+            tile = null;
         },
     }
 }

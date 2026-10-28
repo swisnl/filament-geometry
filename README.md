@@ -206,6 +206,45 @@ public function infolist(Infolist $infolist): Infolist
 
 Unlike the form field, the entry automatically detects the shape of the resolved value at runtime (a JSON string, a plain array, a decoded object, or a `matanyadaev/laravel-eloquent-spatial` geometry instance) — there is no need to configure a state cast manually.
 
+#### Popups
+
+To show several geometries, each with its own popup that opens when it is clicked, use a `FeatureCollection` of `Feature`s as the state:
+
+```php
+use Swis\Filament\Geometry\GeoJson\Feature;
+use Swis\Filament\Geometry\GeoJson\FeatureCollection;
+use Swis\Filament\Geometry\Infolists\Geometry;
+
+Geometry::make('locations')
+    ->state(fn (): FeatureCollection => FeatureCollection::make(
+        $addresses->map(fn (Address $address): Feature => Feature::make($address->location)
+            ->popup(view('addresses.popup', ['address' => $address]))),
+    )),
+```
+
+A `Feature` takes a `matanyadaev/laravel-eloquent-spatial` geometry or a GeoJSON geometry array. Its popup is escaped when it's a string, and rendered as HTML when it's an `Htmlable`, like the view above. Only features built this way get a popup: properties in GeoJSON from any other state (e.g. a database column) are ignored.
+
+The default marker opens its popup above the marker. When you use your own icon (`Swis\Filament\Geometry\Icons\Generic`), also set Leaflet's `popupAnchor` option, e.g. `'popupAnchor' => [0, -41]` for an icon of 41 pixels high, or the popup opens over the icon.
+
+The popup is styled like a Filament modal in light and dark mode. Leaflet's own styles for links and paragraphs don't apply to the content, so Filament components (e.g. `<x-filament::button>`) and Tailwind classes in it keep their own styling.
+
+To lay out the content like a Filament modal as well, use the `<x-filament-geometry::popup>` component, e.g. in the `addresses.popup` view:
+
+```blade
+<x-filament-geometry::popup :heading="$address->name" :description="$address->city">
+    <x-slot name="footer">
+        <x-filament::button tag="a" :href="route('addresses.show', $address)">
+            View
+        </x-filament::button>
+    </x-slot>
+</x-filament-geometry::popup>
+```
+
+The `heading` and `description` are escaped, unless they are an `Htmlable` (e.g. an `HtmlString`). Like the other views of this plugin, the component is styled with Tailwind classes, so it needs the `@source` line from the [installation](#installation) in your theme.
+
+> [!WARNING]
+> An `Htmlable` popup is rendered as is, so make sure any user input in it is escaped (e.g. with `{{ }}` in a Blade view).
+
 ## Testing
 
 ```bash
