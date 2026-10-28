@@ -86,7 +86,7 @@ export default function filamentGeometry($wire, $watch, config) {
             this.fitGeometryBounds()
 
             // Watch for changes coming from Livewire
-            this.$watch('geoJsonFeature', () => {
+            this.$watch('features', () => {
                 if (!this.ignoreNextValueUpdate) {
                     this.drawItems.withoutEvents(() => {
                         this.drawItems.clearLayers()
@@ -191,25 +191,43 @@ export default function filamentGeometry($wire, $watch, config) {
             }
         },
 
-        get geoJsonFeature() {
+        get features() {
             const parsed = typeof this.value === 'string'
                 ? (this.value ? JSON.parse(this.value) : null)
                 : (this.value ?? null);
 
-            return parsed ? flatten(parsed).features.map(feature => feature.geometry) : null
+            return parsed ? flatten(parsed).features : null
+        },
+
+        hasPopup(feature) {
+            return this.config.popups === true && typeof feature.properties?.popup === 'string'
+        },
+
+        isInteractive(feature) {
+            return !this.config.disabled || this.hasPopup(feature)
         },
 
         getLeafletLayer() {
-            return LF.geoJSON(this.geoJsonFeature ?? [], {
-                pointToLayer: (geoJsonPoint, latlng) => {
+            return LF.geoJSON(this.features ?? [], {
+                pointToLayer: (feature, latlng) => {
                     return L.marker(latlng, {
                         icon: this.createMarkerIcon(),
+                        interactive: this.isInteractive(feature),
                     })
                 },
-                interactive: !this.config.disabled,
+                // Leaflet reads `interactive` when a vector layer is first rendered, so it's set per feature here
+                style: (feature) => ({
+                    interactive: this.isInteractive(feature),
+                }),
                 onEachFeature: (feature, layer) => {
+                    if (this.hasPopup(feature)) {
+                        layer.bindPopup(feature.properties.popup, {
+                            className: 'fi-geometry-popup-ctn',
+                        })
+                    }
+
                     layer.pm.getShape = function () {
-                        switch (feature.type) {
+                        switch (feature.geometry.type) {
                             case 'Point':
                             case 'MultiPoint':
                                 return 'Marker';
@@ -220,7 +238,7 @@ export default function filamentGeometry($wire, $watch, config) {
                             case 'MultiPolygon':
                                 return 'Polygon';
                             default:
-                                throw new Error(`Unsupported feature type: ${feature.type}`);
+                                throw new Error(`Unsupported feature type: ${feature.geometry.type}`);
                         }
                     }
                 },
