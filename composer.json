@@ -1,6 +1,6 @@
 {
     "name": "swisnl/filament-geometry",
-    "description": "Geometry form field for Filament PHP",
+    "description": "Geometry form field and infolist for Filament PHP",
     "keywords": [
         "swisnl",
         "laravel",
