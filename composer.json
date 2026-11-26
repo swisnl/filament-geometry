@@ -30,6 +30,7 @@
         "filament/filament": "^4.0|^5.0",
         "filament/forms": "^4.0|^5.0",
         "filament/infolists": "^4.0|^5.0",
+        "illuminate/contracts": "^12.0|^13.0",
         "spatie/laravel-package-tools": "^1.16"
     },
     "require-dev": {
@@ -37,7 +38,7 @@
         "laravel/pint": "^1.14",
         "matanyadaev/laravel-eloquent-spatial": "^4.5",
         "nunomaduro/collision": "^8.1",
-        "orchestra/testbench": "^9.0|^10.0|^11.0",
+        "orchestra/testbench": "^10.0|^11.0",
         "pestphp/pest": "^4.0",
         "pestphp/pest-plugin-arch": "^4.0",
         "pestphp/pest-plugin-laravel": "^4.0",
