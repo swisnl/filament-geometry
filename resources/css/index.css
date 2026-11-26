@@ -7,3 +7,68 @@
 .leaflet-control-geosearch {
     color: #333;
 }
+
+/* Popups opened by this package, styled like Filament's modal window with the colors and font of the panel */
+.fi-geometry-popup-ctn {
+    --fi-geometry-popup-bg: #fff;
+    --fi-geometry-popup-color: var(--gray-950);
+    --fi-geometry-popup-ring: color-mix(in oklab, var(--gray-950) 5%, transparent);
+    --fi-geometry-popup-close: var(--gray-400);
+    --fi-geometry-popup-close-hover: var(--gray-500);
+}
+
+.dark .fi-geometry-popup-ctn {
+    --fi-geometry-popup-bg: var(--gray-900);
+    --fi-geometry-popup-color: #fff;
+    --fi-geometry-popup-ring: rgb(255 255 255 / 0.1);
+    --fi-geometry-popup-close: var(--gray-500);
+    --fi-geometry-popup-close-hover: var(--gray-400);
+}
+
+.fi-geometry-popup-ctn .leaflet-popup-content-wrapper,
+.fi-geometry-popup-ctn .leaflet-popup-tip {
+    background-color: var(--fi-geometry-popup-bg);
+    color: var(--fi-geometry-popup-color);
+    box-shadow:
+        0 0 0 1px var(--fi-geometry-popup-ring),
+        0 20px 25px -5px rgb(0 0 0 / 0.1),
+        0 8px 10px -6px rgb(0 0 0 / 0.1);
+}
+
+/* The padding is on the wrapper, because Leaflet relies on it to keep the margins of the content inside the popup */
+.fi-geometry-popup-ctn .leaflet-popup-content-wrapper {
+    border-radius: 0.75rem;
+    padding: 1.5rem 3rem 1.5rem 1.5rem;
+}
+
+.fi-geometry-popup-ctn .leaflet-popup-content {
+    margin: 0;
+    font-family: var(--font-family), ui-sans-serif, system-ui, sans-serif;
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+}
+
+/*
+ * Leaflet styles links and paragraphs in popups, which would override the styles of the content (e.g. Filament buttons).
+ * Leaflet's CSS isn't in a cascade layer and Filament's and Tailwind's CSS is, so `revert-layer` hands these properties back to them.
+ */
+.fi-geometry-popup-ctn .leaflet-popup-content a,
+.fi-geometry-popup-ctn .leaflet-popup-content p {
+    color: revert-layer;
+    margin: revert-layer;
+}
+
+.fi-geometry-popup-ctn a.leaflet-popup-close-button {
+    top: 1rem;
+    right: 1rem;
+    width: 1.5rem;
+    height: 1.5rem;
+    font-size: 1.5rem;
+    line-height: 1.5rem;
+    color: var(--fi-geometry-popup-close);
+}
+
+.fi-geometry-popup-ctn a.leaflet-popup-close-button:hover,
+.fi-geometry-popup-ctn a.leaflet-popup-close-button:focus {
+    color: var(--fi-geometry-popup-close-hover);
+}

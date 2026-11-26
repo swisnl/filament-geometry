@@ -3,8 +3,10 @@
 namespace Swis\Filament\Geometry\Infolists;
 
 use Filament\Infolists\Components\Entry;
-use MatanYadaev\EloquentSpatial\Objects\Geometry as EloquentSpatialGeometry;
+use Illuminate\Contracts\Support\Arrayable;
 use Swis\Filament\Geometry\Concerns\HasMapOptions;
+use Swis\Filament\Geometry\GeoJson\Feature;
+use Swis\Filament\Geometry\GeoJson\FeatureCollection;
 use Swis\Filament\Geometry\Icons\Marker;
 use Swis\Filament\Geometry\TileLayers\OpenStreetMap as OpenStreetMapTileLayer;
 
@@ -28,8 +30,12 @@ class Geometry extends Entry
      */
     public function getMapConfig(): array
     {
+        $state = $this->getState();
+
         return [
-            'value' => $this->getGeoJson(),
+            'value' => $this->getGeoJson($state),
+            // Only features built with `Feature` get popups, so HTML in stored GeoJSON properties is never rendered
+            'popups' => $state instanceof Feature || $state instanceof FeatureCollection,
             'bounds' => $this->bounds?->toArray(),
             'map' => $this->mapOptions,
             'markerIcon' => $this->markerIcon->options(),
@@ -45,12 +51,10 @@ class Geometry extends Entry
      *
      * @return array<string, mixed>|null
      */
-    private function getGeoJson(): ?array
+    private function getGeoJson(mixed $state): ?array
     {
-        $state = $this->getState();
-
         $geoJson = match (true) {
-            $state instanceof EloquentSpatialGeometry => $state->toArray(),
+            $state instanceof Arrayable => $state->toArray(),
             is_string($state) => json_decode($state, true),
             is_array($state) => $state,
             is_object($state) => json_decode(json_encode($state) ?: '', true),

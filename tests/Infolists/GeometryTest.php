@@ -82,3 +82,18 @@ it('treats a scalar state as no location', function () {
 
     expect($config['value'])->toBeNull();
 });
+
+it('does not enable popups for a geojson state, so html in its properties is not rendered', function (mixed $state) {
+    $config = Geometry::make('location')
+        ->state($state)
+        ->getMapConfig();
+
+    expect($config['popups'])->toBeFalse();
+})->with([
+    'array' => [[
+        'type' => 'Feature',
+        'geometry' => ['type' => 'Point', 'coordinates' => [4.49, 52.16]],
+        'properties' => ['popup' => '<img src=x onerror=alert(1)>'],
+    ]],
+    'json string' => ['{"type":"Feature","geometry":{"type":"Point","coordinates":[4.49,52.16]},"properties":{"popup":"<img src=x onerror=alert(1)>"}}'],
+]);
